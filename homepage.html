@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Homepage - Art Gallery</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #020617            ;
+            color: #333;
+            position: relative;
+        }
+        .header {
+            /* background: linear-gradient(to right, #6a11cb, #2575fc); */
+            color: white;
+            padding: 30px 20px;
+            text-align: center;
+            position: fixed;
+            top: 0;
+            width: 100%;
+
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 2.5rem;
+        }
+        .header p {
+            margin: 10px 0 20px;
+            font-size: 1.2rem;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+        nav a:hover {
+            text-decoration: underline;
+        }
+
+        .events {
+            padding: 40px 20px;
+            max-width: 800px;
+            margin: auto;
+        }
+        .events h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 2rem;
+            color: #444;
+        }
+        #eventList {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .event-item {
+            border-bottom: 1px solid #ddd;
+            padding: 15px 0;
+        }
+        .event-item:last-child {
+            border-bottom: none;
+        }
+        .event-title {
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        .event-date {
+            color: #888;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body >
+    <header style="display: flex; flex-direction: row; justify-content: space-evenly; align-items: center;"  class="header">
+        <!-- <h1>🎨 Art Gallery Management System</h1>
+        <p>Welcome to the world of creativity and imagination!</p> -->
+        <p>About</p>
+        <a href="catalogue.html">🖼️ View Catalogue</a>
+        <p>Contact</p>
+
+        <div class="tooltip" style="border-radius: 50%; background-color: blue; width: 40px; height: 40px; cursor: pointer;">
+            <!-- <p ></p> -->
+            <div class="tooltipbox">
+                <h3>Profile</h3>
+                <p>Name</p>
+                <p>Email</p>
+                <p>Help</p>
+                <a href="php/logout.php">🚪 Logout</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="carousel-section">
+        <div style="height: 500px; width: 100vw;" class="carousel-container">
+            <div class="carousel-track" id="carouselTrack">
+                <img style="height: 600px; width: 100%;" src="images/art4.jpeg" alt="Art 1">
+                <!-- <img style="height: 80vh; width: 70vw;" src="images/img2.jpeg" alt="Art 2"> -->
+                <!-- <img src="images/img3.jpeg" alt="Art 3"> -->
+                <!-- <img src="images/img4.jpeg" alt="Art 4">   -->
+            </div>
+        </div>
+    </div> <br> <br>
+
+    <div style=" margin-top: 10px; margin-left: 20px; margin-right: 20px; padding-top: 50px; text-align: center; " >
+        <h2 style="color: azure; text-decoration: underline;">About Us</h2>
+        <p style="color: beige;">Our Art Gallery Management Syatem is a user friendly web platform.It helps galleries efficiently manage their artwork inventory,artist profiles,exhibitions and customer enquiries.The system features dedicated modules for administrators and users,supporting tasks like adding new art,promoting exhibitions and tracking sales.By centralising gallery operations, it streamlines workflows and enhances the experience for gallery staff,artists and visitors alike.</p>
+    </div>
+
+    <section style=" margin-top: 10px; margin-left: 20px; margin-right: 20px; padding-top: 50px; text-align: center; ">
+        <h2 style="color: azure; text-decoration: underline;">Contact</h2>
+        <h3>Reach  & Follow Us On</h3>
+        <section id="contactSection" style="text-align: center; padding: 30px;">
+            
+            <div style="display: flex; justify-content: center; gap: 30px; font-size: 32px; margin-top: 20px;">
+                <a href="https://instagram.com/yourprofile" target="_blank" title="Instagram">
+                    <i class="fab fa-instagram"></i>
+                </a>
+                <a href="https://x.com/yourprofile" target="_blank" title="X (Twitter)">
+                    <i class="fab fa-x-twitter"></i>
+                </a>
+                <a href="https://linkedin.com/in/yourprofile" target="_blank" title="LinkedIn">
+                    <i class="fab fa-linkedin"></i>
+                </a>
+                <a href="https://facebook.com/yourprofile" target="_blank" title="Facebook">
+                    <i class="fab fa-facebook"></i>
+                </a>
+            </div>
+        </section>
+        
+    </section>
+
+    <script>
+        fetch('php/load_events.php')
+            .then(res => res.text())
+            .then(data => {
+                const container = document.getElementById('eventList');
+                container.innerHTML = data || "<p>No upcoming events at the moment.</p>";
+            })
+            .catch(err => {
+                document.getElementById('eventList').innerHTML = "<p>Error loading events.</p>";
+                console.error('Event load error:', err);
+            });
+
+            
+    </script>
+</body>
+</html>

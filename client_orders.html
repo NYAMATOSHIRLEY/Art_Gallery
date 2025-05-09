@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Your Orders - Art Gallery</title>
+    <link rel="stylesheet" href="css/style.css">
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            fetch('php/load_client_orders.php')
+                .then(res => res.json())
+                .then(data => {
+                    const container = document.getElementById('orders');
+                    if (!data.length) {
+                        container.innerHTML = "<p>No orders yet.</p>";
+                        return;
+                    }
+                    container.innerHTML = data.map(order => `
+                        <div class="order">
+                            <h3>${order.title}</h3>
+                            <p>By ${order.artist}</p>
+                            <p>Quantity: ${order.quantity}</p>
+                            <p>Total: KES ${order.total_price}</p>
+                            <p>Ordered on: ${order.date}</p>
+                        </div>
+                    `).join('');
+                });
+        });
+    </script>
+</head>
+<body>
+    <div class="header">
+        <h2>🧾 Your Orders</h2>
+        <a href="homepage.html">Back to Homepage</a>
+    </div>
+    <div id="orders" class="order-list">Loading your orders...</div>
+</body>
+</html>

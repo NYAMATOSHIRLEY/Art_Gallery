@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Catalogue - Art Gallery</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="js/catalogue.js" defer></script>
+    <script src="js/cart.js" defer></script>
+    <script src="js/logout.js" defer></script>
+</head>
+<body >
+    <header style="display: flex; flex-direction: row; justify-content: space-evenly; align-items: center;"  class="header">
+        <!-- <a href="homepage.html">🏠 Back to Homepage</a> -->
+        <span onclick="showEvents()" id="eventsSection" style="color: aliceblue; font-weight: bold; cursor: pointer;">Events <span class="mdi--bell-notification"></span> </span>
+        <h2>🖼️ Art Catalogue</h2>
+
+        <span class="cart-icon" id="cartToggle"></span>
+        
+        <div class="tooltip" style="border-radius: 50%; background-color: blue; width: 40px; height: 40px; cursor: pointer;">
+            <!-- <p ></p> -->
+            <div class="tooltipbox">
+                <h3>Profile</h3>
+                <p id="profileName"></p>
+                <p id="profileEmail"></p>
+                <p>Help</p>
+                <p  onclick="logout() "> Logout</p>
+            </div>
+        </div>
+        
+
+    </header> 
+
+    <div style="padding-top: 80px;"  id="artList" class="catalogue-container">
+        <!-- Loaded dynamically via JS -->
+    </div>
+
+    <section id="eventsPanel" style="display: none; position: absolute; top: 60px; right: 10%; width: 300px; max-height: 400px; overflow-y: auto; background: white; border: 1px solid #ccc; border-radius: 10px; padding: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.2); z-index: 1000;">
+        <h3 style="margin-top: 0;">Upcoming Events</h3>
+        <ul id="eventsList" style="list-style: none; padding-left: 0;"></ul>
+    </section>
+    
+
+    <!-- Cart-->
+    <div  id="cartSidebar" class="cart-sidebar">
+        <span style="position: absolute; top: 5px; right: 5px; cursor: pointer;" class="lets-icons--close-round-fill" onclick="closeCart()"></span>
+        <h3 style="text-align: center; font-weight: bold; text-decoration: underline; color: azure;">MY CART</h3>
+        
+        <div id="cartItems"></div>
+       
+    </div>
+
+    <!-- Payment Pop Up-->
+    <div style="display: none;position: absolute; top: 5%; border: 2px solid blue;" class="form-container" id="payment-popUp" name="paymentForm">
+        <h3>Complete Your Order</h3>
+        <form action="php/payment.php" method="POST" name="paymentForm">
+            <label>Enter M-Pesa Number:</label>
+            <input type="number" name="mpesa_number" placeholder="0700000000" required>
+            <button type="button" onclick="orderNow(parseInt(document.paymentForm.mpesa_number.value))">Pay Now</button>
+        </form>
+    </div>
+
+    <!-- Confirmation Pop Up-->>
+     <div class="message-popUp-container" id="message-popUp-container">
+        <p id="message-popUpText"></p>
+        <button  type="button" id="customBtn">OK</button>
+     </div>
+     
+</body>
+</html>

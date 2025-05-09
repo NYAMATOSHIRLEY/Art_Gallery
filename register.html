@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Register - Art Gallery</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="js/register.js" defer></script>
+</head>
+<body>
+    <div  class="form-container">
+        <h2>Register</h2>
+        <form style="width: 70vw;" id="registerForm" autocomplete="off">
+            <input type="text" name="full_name" placeholder="Full Name" required>
+            <input type="text" name="username" placeholder="Username (letters only)" pattern="[A-Za-z]+" required>
+            <input type="email" name="email" placeholder="Email" required>
+            <input type="password" name="password" id="password" placeholder="Password (min 8 chars)" minlength="8" required>
+            <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required>
+            <!-- <label><input type="checkbox" onclick="togglePassword()"> Show Passwords</label> -->
+            <select name="role" required>
+                <option value="">Register as...</option>
+                <option value="client">Client</option>
+                <option value="artist">Artist</option>
+            </select>
+            <button type="submit">Register</button>
+        </form>
+        <p id="registration-message"></p>
+        <a href="login.html">Back to Login</a>
+    </div>
+</body>
+</html>
