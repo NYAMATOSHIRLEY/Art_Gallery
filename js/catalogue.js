@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('php/load_catalogue.php')
         .then(res => res.json())
         .then(data => {
-            // console.log("Data", data)
+            console.log("Data", data)
             const artList = document.getElementById('artList');
             artList.innerHTML = '';
             data.forEach(art => {
@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 artDiv.innerHTML = `
                     <img src="${art.image}" alt="${art.title}" />
                     <h3>${art.title}</h3>
-                    <p style="font-size:12px;>By ${art.artist}</p>
+                    <p>By ${art.artist}</p>
                     <p>Price: KES ${art.price}</p>
                     <div class="quantity-controls" style="display:inline-block;">
                         <button onclick="changeQty(${art.id}, -1)">-</button>

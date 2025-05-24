@@ -7,15 +7,29 @@
     <script src="js/register.js" defer></script>
 </head>
 <body>
-    <div  class="form-container">
+    <header style="  background: white; box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05); position: inherit;">    
+        <h1 style="  color: #ff7f50; text-align: center; ">🎨Art Curio</h1>        
+    </header>
+    <div  class="form-container" style=" margin-top: 20px;">
         <h2>Register</h2>
-        <form style="width: 70vw;" id="registerForm" autocomplete="off">
-            <input type="text" name="full_name" placeholder="Full Name" required>
-            <input type="text" name="username" placeholder="Username (letters only)" pattern="[A-Za-z]+" required>
-            <input type="email" name="email" placeholder="Email" required>
-            <input type="password" name="password" id="password" placeholder="Password (min 8 chars)" minlength="8" required>
-            <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required>
+        <form style="width: 50vw;" id="registerForm" autocomplete="off" style="display: flex; flex-direction: column; gap: 10px;">
+            <label for="full_name">Full Name</label>
+            <input type="text" name="full_name" placeholder="Full Name" required> <br>
+
+            <!-- <label for="username"></label>
+            <input type="text" name="username" placeholder="Username (letters only)" pattern="[A-Za-z]+" required> -->
+
+            <label for="email">Email</label>
+            <input type="email" name="email" placeholder="Email" required autocomplete="off"> <br>
+
+            <label for="password">Password</label>
+            <input type="password" name="password" id="password" placeholder="Password (min 8 chars)" minlength="8" required> <br>
+
+            <label for="confirm_password">Confirm Password</label>
+            <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required> <br>
             <!-- <label><input type="checkbox" onclick="togglePassword()"> Show Passwords</label> -->
+
+            <label for="role">Role</label>
             <select name="role" required>
                 <option value="">Register as...</option>
                 <option value="client">Client</option>
@@ -26,5 +40,9 @@
         <p id="registration-message"></p>
         <a href="login.html">Back to Login</a>
     </div>
+
+    <footer style="background-color: #f08c4b; width: 100%;  text-align: center; color: white; margin-top: 20px; font-weight: bold;">
+        <p>&copy; 2025 Art Gallery Management System</p>
+    </footer>
 </body>
 </html>

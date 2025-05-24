@@ -17,8 +17,9 @@ body {
     padding: 20px 30px;
     border-radius: 8px;
     box-shadow: 0 0 15px rgba(0,0,0,0.2);
-    text-align: center;
-    z-index: 10;
+    text-align: left;
+    font-weight: bold;
+    
 }
 input, select, button {
     width: 100%;
@@ -37,9 +38,14 @@ button:hover {
 }
 
 #registerForm  input  ,select ,button{
-    width: 50%;
+    width: 30%;
 
 }
+/* 
+#registerForm  label{
+    font-weight: bold;
+    text-align: left;
+} */
 
 .success-message {
     color: var(--success-color);

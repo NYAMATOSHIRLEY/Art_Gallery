@@ -1,18 +1,13 @@
 <?php
+ob_start(); // Start output buffering early
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-// your code follows...
-
+// CORS and Content-Type headers
 header('Access-Control-Allow-Origin: *');
 header('Access-Control-Allow-Methods: POST, OPTIONS');
-header('Content-Type: application/json');
 header('Access-Control-Allow-Headers: Content-Type');
-
-// Enable error reporting
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+header('Content-Type: application/json');
 
 require 'config.php';
 
@@ -22,33 +17,20 @@ $response = [
     'redirect' => ''
 ];
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Get and sanitize input data
-    $full_name = trim($_POST['full_name']);
-    $username = trim($_POST['username']);
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
-    $role = $_POST['role'];
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    // Sanitize inputs with null-safe trimming
+    $full_name = trim($_POST['full_name'] ?? '');
+    $email = trim($_POST['email'] ?? '');
+    $password = $_POST['password'] ?? '';
+    $role = $_POST['role'] ?? '';
 
-    // Basic validation
-    if (empty($full_name) || empty($username) || empty($email) || empty($password) || empty($role)) {
-        $response['message'] = 'All fields are required';
+    // Validate required fields
+    if (empty($full_name) || empty($email) || empty($password) || empty($role)) {
+        $response['message'] = 'All fields are required.';
+        ob_end_clean();
         echo json_encode($response);
         exit;
     }
-
-    // Check if username already exists
-    $stmt = $conn->prepare("SELECT id FROM users WHERE username = ?");
-    $stmt->bind_param("s", $username);
-    $stmt->execute();
-    $stmt->store_result();
-
-    if ($stmt->num_rows > 0) {
-        $response['message'] = 'Username already exists';
-        echo json_encode($response);
-        exit;
-    }
-    $stmt->close();
 
     // Check if email already exists
     $stmt = $conn->prepare("SELECT id FROM users WHERE email = ?");
@@ -57,7 +39,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->store_result();
 
     if ($stmt->num_rows > 0) {
-        $response['message'] = 'Email already exists';
+        $response['message'] = 'Email already exists.';
+        $stmt->close();
+        ob_end_clean();
         echo json_encode($response);
         exit;
     }
@@ -66,23 +50,23 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Hash password
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-    // Insert new user
-    $stmt = $conn->prepare("INSERT INTO users (full_name, username, email, password, role) VALUES (?, ?, ?, ?, ?)");
-    $stmt->bind_param("sssss", $full_name, $username, $email, $hashed_password, $role);
+    // Insert user
+    $stmt = $conn->prepare("INSERT INTO users (full_name, email, password, role) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("ssss", $full_name, $email, $hashed_password, $role);
 
     if ($stmt->execute()) {
         $response['success'] = true;
         $response['message'] = 'Registered successfully!';
-        $response['redirect'] = 'homepage.html';
+        $response['redirect'] = 'catalogue.html';
     } else {
         $response['message'] = 'Registration failed: ' . $stmt->error;
     }
 
     $stmt->close();
 } else {
-    $response['message'] = 'Invalid request method';
-    
+    $response['message'] = 'Invalid request method.';
 }
-ob_clean(); 
+
+ob_end_clean();
 echo json_encode($response);
 ?>
