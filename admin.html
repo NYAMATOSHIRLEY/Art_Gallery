@@ -11,10 +11,10 @@
 
 </head>
 <body>
-    <header  class="header">
+    <header style="width: 100vw;"  class="header">
         <h1 > Admin Dashboard - Art Gallery</h2>
-        <div class="tooltip" style="position: absolute; top: 10px; right: 10px; border-radius: 50%; background-color: blue; width: 40px; height: 40px; cursor: pointer;">
-            <!-- <p ></p> -->
+        <div class="tooltip" style="position: absolute; top: 10px; right: 20px; border-radius: 50%; background-color: blue; width: 40px; height: 40px; cursor: pointer;">
+        
             <div class="tooltipbox">
                 <h3>Profile</h3>
                 <p id="profileName">${}</p>
@@ -396,6 +396,14 @@
                     <button id="customBtn" onclick="updateOrderStatus()">Update Status</button>
                 </div>
             </div>
+
+            <!-- Success Confirmation Modal -->
+            <div id="adminSuccessModal" class="modal" style="display: none;">
+                <div class="modal-content small">
+                    <h2 id="success-message" style="text-align:center; color: black; border-left: 10px solid blue;"></h2>
+                    <button onclick="document.getElementById('adminSuccessModal').style.display='none';" style="margin-left: 40%;">OK</button>
+                </div>
+            </div>
             
     
             <div style="display: none;" id="reports">
@@ -464,52 +472,65 @@
                     </table>
                 </div>
 
-                <div id="adminModal" class="modal">
+                <!-- Add Admin Modal -->
+                <div id="addAdminModal" class="modal" style="display: none;">
                     <div class="modal-content">
-                        <span style="position: absolute; top: 5px; right: 5px; cursor: pointer;" class="lets-icons--close-round-fill" onclick="document.getElementById('adminModal').style.display = 'none';"></span>
-                        <h2 id="adminModalTitle">Add Admin</h2>
-                        <form id="adminForm">
-                            <input type="hidden" id="adminId" name="adminId">
-                
-                            <div class="form-group">
-                                <label for="adminName">Full Name:</label>
-                                <input type="text" id="adminName" name="adminName" required>
-                            </div>
-                
-                            <div class="form-group">
-                                <label for="adminEmail">Email:</label>
-                                <input type="email" id="adminEmail" name="adminEmail" required>
-                            </div>
-                
-                            <div class="form-group">
-                                <label for="adminRole">Role:</label>
-                                <select id="adminRole" name="adminRole" required>
-                                    <option value="">Select Role</option>
-                                    <option value="client">Client</option>
-                                    <option value="artist">Artist</option>
-                                    <option value="admin">Admin</option>
-                                </select>
-                            </div>
+                        <span style="position: absolute; top: 5px; right: 5px; cursor: pointer;" class="lets-icons--close-round-fill" onclick="document.getElementById('addAdminModal').style.display='none';"></span>
+                        <h2 style="text-align: center; text-decoration: underline; text-underline-offset: 3px; color: blue;">PROMOTE USER TO ADMIN</h2>
+                        <p style="font-weight: bold; color: red; text-align: center;">Please note that a person MUST have already registered before they can be made an admin.</p>
+                        <form id="findUserForm">
+                            <label for="searchEmail">Enter User Email:</label>
+                            <input type="email" id="searchEmail" name="searchEmail" required>
+                            <button type="submit">Find User</button>
                         </form>
-                        <button style="margin-left: 40%;" type="button" id="saveAdminBtn" onclick="saveAdmin()">Save</button>
+
+                        <div id="userDetails" style="margin-top: 15px; padding-left: 20px; display: none;">
+                            <p><strong>Name:</strong> <span style="color: blue; font-weight: 900;" id="userFullName"></span></p>
+                            <p><strong>Current Role:</strong> <span style="color: blue; font-weight: 900;" id="userRole"></span></p>
+                            <button id="makeAdminBtn">Make Admin</button>
+                        </div>
                     </div>
                 </div>
 
-                <div style="display: none;" id="deleteAdminModal" class="modal">
+                <!-- Success Confirmation Modal -->
+                <div id="adminSuccessModal" class="modal" style="display: none;">
                     <div class="modal-content small">
-                        <div class="modal-header">
-                            <span style="position: absolute; top: 5px; right: 5px; cursor: pointer;" class="lets-icons--close-round-fill" onclick="document.getElementById('deleteAdminModal').style.display = 'none';"></span>
-                            <h2>Confirm Deletion</h2>
-                        </div>
-                        <div class="modal-body">
-                            <p style="font-weight: bold;">Are you sure you want to delete <span id="delAdminName" style="color: crimson;"></span>? This action cannot be undone.</p>
-                            <div class="form-actions">
-                                <button type="button" class="btn-secondary" onclick="document.getElementById('deleteAdminModal').style.display = 'none';">Cancel</button>
-                                <button type="button" class="btn-danger" id="confirmDeleteAdmin">Delete</button>
-                            </div>
-                        </div>
+                        <h2 id="success-message" style="text-align:center; color: black; border-left: 10px solid blue;"></h2>
+                        <button onclick="document.getElementById('adminSuccessModal').style.display='none'; loadAdmins();" style="margin-left: 40%;">OK</button>
                     </div>
                 </div>
+
+
+                <!-- Change Role Modal -->
+                <div id="changeRoleModal" class="modal" style="display: none;">
+                    <div class="modal-content small">
+                        <span 
+                            style="position: absolute; top: 5px; right: 5px; cursor: pointer;" 
+                            class="lets-icons--close-round-fill" 
+                            onclick="document.getElementById('changeRoleModal').style.display = 'none';">
+                        </span>
+                        <h2>Change User Role</h2>
+
+                        <form id="changeRoleForm">
+                            <input type="hidden" id="changeRoleUserId" name="user_id">
+
+                            <div class="form-group">
+                                <label for="newRole">New Role:</label>
+                                <select id="newRole" name="new_role" required>
+                                    <option value="">Select a Role</option>
+                                    <option value="admin">Admin</option>
+                                    <option value="client">Client</option>
+                                    <option value="artist">Artist</option>
+                                </select>
+                            </div>
+
+                            <div style="margin-top: 15px;">
+                                <button type="submit" class="btn-primary">Update Role</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+
                 
                 
             </div>

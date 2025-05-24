@@ -530,8 +530,8 @@ function updateOrderStatus() {
     })
     .then(res => res.json())
     .then(data => {
-        document.getElementById('addModal').style.display = 'block';
-        document.getElementById('showmsg').textContent = data.message;
+        document.getElementById('adminSuccessModal').style.display = 'block';
+        document.getElementById('success-message').textContent =  data.message;
         // alert(data.message);
         closeOrderModal();
         loadOrders();
@@ -672,8 +672,8 @@ function updateOrderStatus() {
                         <td>${admin.role}</td>
                         <td>${admin.registered_on}</td>
                         <td>
-                            <button onclick="openChangeRoleModal(${admin.id}, '${admin.role}')">✏️</button>
-                            <button onclick="deleteAdmin(${admin.id}, '${admin.full_name}')">🗑️</button>
+                            <button style="width:fit-content;" onclick="openChangeRoleModal(${admin.id}, '${admin.role}')">Dismiss</button>
+                    
                         </td>
                     </tr>
                 `;
@@ -683,6 +683,57 @@ function updateOrderStatus() {
             })
             .catch(error => console.error('Error loading admins:', error));
     }
+
+    document.getElementById('addAdminBtn').addEventListener('click', () => {
+        document.getElementById('addAdminModal').style.display = 'block';
+        document.getElementById('userDetails').style.display = 'none';
+        document.getElementById('findUserForm').reset();
+    });
+    
+    document.getElementById('findUserForm').addEventListener('submit', function (e) {
+        e.preventDefault();
+        const email = document.getElementById('searchEmail').value;
+    
+        fetch('php/load_user_by_email.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        })
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                document.getElementById('userFullName').textContent = data.full_name;
+                document.getElementById('userRole').textContent = data.role;
+                document.getElementById('userDetails').style.display = 'block';
+    
+                document.getElementById('makeAdminBtn').onclick = () => {
+                    fetch('php/make_admin.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ id: data.id })
+                    })
+                    .then(res => res.json())
+                    .then(result => {
+                        if (result.success) {
+                            document.getElementById('addAdminModal').style.display = 'none';
+                            // document.getElementById('adminSuccessModal').style.display = 'block';
+                            document.getElementById('adminSuccessModal').style.display = 'block';
+                            document.getElementById('success-message').textContent = "✅ Admin Added Successfully."; ;
+                        } else {
+                            // alert('Error: ' + result.message);
+                            document.getElementById('adminSuccessModal').style.display = 'block';
+                            document.getElementById('success-message').textContent = result.message;
+                        }
+                    });
+                };
+            } else {
+                document.getElementById('adminSuccessModal').style.display = 'block';
+                document.getElementById('success-message').textContent = data.message;
+                // alert(data.message);
+            }
+        });
+    });
+    
     
     function openChangeRoleModal(userId, currentRole) {
         document.getElementById('changeRoleUserId').value = userId;
@@ -703,33 +754,17 @@ function updateOrderStatus() {
         .then(response => response.json())
         .then(result => {
             if (result.success) {
-                alert('Role updated successfully.');
+                // alert('Role updated successfully.');
+                document.getElementById('adminSuccessModal').style.display = 'block';
+                document.getElementById('success-message').textContent =  "✅ Admin Dismissed Successfully.";
                 document.getElementById('changeRoleModal').style.display = 'none';
                 loadAdmins();
             } else {
-                alert('Error updating role: ' + result.message);
+                document.getElementById('adminSuccessModal').style.display = 'block';
+                document.getElementById('success-message').textContent = 'Error updating role: ' + result.message;
+                // alert('Error updating role: ' + result.message);
             }
         })
         .catch(error => console.error('Error updating role:', error));
     });
-    
-    function deleteAdmin(adminId, adminName) {
-        if (!confirm(`Are you sure you want to delete admin "${adminName}"? This action cannot be undone.`)) return;
-    
-        fetch('php/delete_admin.php', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ id: adminId })
-        })
-        .then(res => res.json())
-        .then(result => {
-            if (result.success) {
-                alert('Admin deleted successfully.');
-                loadAdmins();
-            } else {
-                alert('Error deleting admin: ' + result.message);
-            }
-        })
-        .catch(err => console.error('Delete error:', err));
-    }
     
