@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadEvents();   
     loadOrders()
     loadArtistNames()
+    loadAdmins();
 
     document.getElementById('sortBy').addEventListener('change', function () {
         loadArts(this.value);
@@ -55,7 +56,7 @@ function editArt(id) {
             option.selected = true;
             document.getElementById('artArtist').appendChild(option);
 
-
+            document.getElementById('artImage').required = false;
             // Show image preview if available
             const preview = document.getElementById('imagePreview');
             preview.innerHTML = art.image 
@@ -150,10 +151,6 @@ document.addEventListener('DOMContentLoaded', () => {
       const formData = new FormData(artForm);
       const artId = document.getElementById('artId').value;
       const url = artId ? 'php/edit_art.php' : 'php/add_art.php';
-      for (let pair of formData.entries()) {
-        console.log(`${pair[0]}:`, pair[1]);
-      }
-      
   
       try {
         const response = await fetch(url, {
@@ -162,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
   
         const result = await response.json();
-        console.log("Result", result);
+        // console.log("Result", result);
   
         if (result.success) {
             document.getElementById('addModal').style.display = 'block';
@@ -406,29 +403,100 @@ function deleteEvent(id) {
 //View Orders
 let currentOrderId = null;
 
+// function loadOrders() {
+//     fetch('php/load_orders.php')
+//         .then(response => response.json())
+//         .then(data => {
+//             const tbody = document.querySelector("#ordersTable tbody");
+//             tbody.innerHTML = "";
+//             data.forEach(order => {
+//                 const row = `
+//                     <tr>
+//                         <td>${order.id}</td>
+//                         <td>${order.user_name}</td>
+//                         <td>${order.art_id}</td>
+//                         <td>${order.quantity}</td>
+//                         <td>${order.total_price}</td>
+//                         <td>${order.order_date}</td>
+//                         <td>${order.served ==1 ? 'Yes' : 'No'}</td>
+//                         <td><button onclick="viewOrder(${order.id})">View</button></td>
+//                     </tr>
+//                 `;
+//                 tbody.innerHTML += row;
+//             });
+//         });
+// }
+
+let ordersData = [];
+
 function loadOrders() {
     fetch('php/load_orders.php')
         .then(response => response.json())
         .then(data => {
-            const tbody = document.querySelector("#ordersTable tbody");
-            tbody.innerHTML = "";
-            data.forEach(order => {
-                const row = `
-                    <tr>
-                        <td>${order.id}</td>
-                        <td>${order.user_name}</td>
-                        <td>${order.art_id}</td>
-                        <td>${order.quantity}</td>
-                        <td>${order.total_price}</td>
-                        <td>${order.order_date}</td>
-                        <td>${order.served ==1 ? 'Yes' : 'No'}</td>
-                        <td><button onclick="viewOrder(${order.id})">View</button></td>
-                    </tr>
-                `;
-                tbody.innerHTML += row;
-            });
+            ordersData = data;
+            sortAndRenderOrders('default'); // Default sort
         });
 }
+
+function sortAndRenderOrders(criteria) {
+    const tbody = document.querySelector("#ordersTable tbody");
+    tbody.innerHTML = "";
+
+    let sortedOrders = [...ordersData];
+
+    switch (criteria) {
+        case 'user_name':
+        case 'art_id':
+        case 'quantity':
+        case 'total_price':
+            sortedOrders.sort((a, b) => {
+                if (typeof a[criteria] === 'string') {
+                    return a[criteria].localeCompare(b[criteria]);
+                }
+                return a[criteria] - b[criteria];
+            });
+            break;
+
+        case 'default':
+        default:
+            sortedOrders.sort((a, b) => {
+                if (a.served !== b.served) {
+                    return a.served - b.served; // No (0) before Yes (1)
+                }
+            
+                const dateA = new Date(a.order_date);
+                const dateB = new Date(b.order_date);
+                return dateB - dateA; // Latest first
+            });
+            
+    }
+
+    sortedOrders.forEach(order => {
+        const row = `
+            <tr>
+                <td>${order.id}</td>
+                <td>${order.user_name}</td>
+                <td>${order.art_id}</td>
+                <td>${order.quantity}</td>
+                <td>${order.total_price}</td>
+                <td>${order.order_date}</td>
+                <td>${order.served == 1 ? 'Yes' : 'No'}</td>
+                <td><button style="width:fit-content;" onclick="viewOrder(${order.id})">View</button></td>
+            </tr>
+        `;
+        tbody.innerHTML += row;
+    });
+}
+
+// Bind sort dropdown
+document.getElementById('sortSelect').addEventListener('change', function () {
+    sortAndRenderOrders(this.value);
+});
+
+// Call this once when page loads
+loadOrders();
+
+
 
 function viewOrder(id) {
     document.getElementById('orderModal').style.display = "block";
@@ -486,7 +554,7 @@ function updateOrderStatus() {
                 renderBarChart('totalAmountChart', data.totalAmount, 'Art Title', 'Total Sales');
                 renderBarChart('userSpendingChart', data.userSpending, 'User', 'Amount Spent');
                 renderPieChart('artistArtCountChart', data.artistArtCount, 'Artist vs Number of Artworks');
-                console.log("Reports Data", response);
+                // console.log("Reports Data", response);
             });
         }, 50); // allow layout to stabilize
     }
@@ -588,3 +656,80 @@ function updateOrderStatus() {
     }
     
 
+    // Load Admins and manage roles
+    function loadAdmins() {
+        fetch('php/load_admins.php')
+            .then(response => response.json())
+            .then(data => {
+                const tbody = document.querySelector("#adminsTable tbody");
+                tbody.innerHTML = "";
+                data.forEach(admin => {
+                    const row = `
+                    <tr>
+                        <td>${admin.id}</td>
+                        <td>${admin.full_name}</td>
+                        <td>${admin.email}</td>
+                        <td>${admin.role}</td>
+                        <td>${admin.registered_on}</td>
+                        <td>
+                            <button onclick="openChangeRoleModal(${admin.id}, '${admin.role}')">✏️</button>
+                            <button onclick="deleteAdmin(${admin.id}, '${admin.full_name}')">🗑️</button>
+                        </td>
+                    </tr>
+                `;
+                
+                    tbody.innerHTML += row;
+                });
+            })
+            .catch(error => console.error('Error loading admins:', error));
+    }
+    
+    function openChangeRoleModal(userId, currentRole) {
+        document.getElementById('changeRoleUserId').value = userId;
+        document.getElementById('newRole').value = currentRole;
+        document.getElementById('changeRoleModal').style.display = 'block';
+    }
+    
+    document.getElementById('changeRoleForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const userId = document.getElementById('changeRoleUserId').value;
+        const newRole = document.getElementById('newRole').value;
+    
+        fetch('php/edit_admin_role.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: userId, new_role: newRole })
+        })
+        .then(response => response.json())
+        .then(result => {
+            if (result.success) {
+                alert('Role updated successfully.');
+                document.getElementById('changeRoleModal').style.display = 'none';
+                loadAdmins();
+            } else {
+                alert('Error updating role: ' + result.message);
+            }
+        })
+        .catch(error => console.error('Error updating role:', error));
+    });
+    
+    function deleteAdmin(adminId, adminName) {
+        if (!confirm(`Are you sure you want to delete admin "${adminName}"? This action cannot be undone.`)) return;
+    
+        fetch('php/delete_admin.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ id: adminId })
+        })
+        .then(res => res.json())
+        .then(result => {
+            if (result.success) {
+                alert('Admin deleted successfully.');
+                loadAdmins();
+            } else {
+                alert('Error deleting admin: ' + result.message);
+            }
+        })
+        .catch(err => console.error('Delete error:', err));
+    }
+    

@@ -13,10 +13,6 @@
 <body>
     <header  class="header">
         <h1 > Admin Dashboard - Art Gallery</h2>
-        <!-- <div class="user-area">
-
-            <div class="user-avatar">AU</div>
-        </div> -->
         <div class="tooltip" style="position: absolute; top: 10px; right: 10px; border-radius: 50%; background-color: blue; width: 40px; height: 40px; cursor: pointer;">
             <!-- <p ></p> -->
             <div class="tooltipbox">
@@ -30,10 +26,10 @@
 
     <div class="admin-dashboard">
         <div class="main-sidebar">
-            <h2>Control Panel</h2>
+            <h2 >CONTROL PANEL</h2>
             <script>
                 function loadSection(sectionId) {
-                    const sections = ['manage-arts', 'manage-artists', 'schedule-events', 'view-orders', 'reports'];
+                    const sections = ['manage-arts', 'manage-artists', 'schedule-events', 'view-orders', 'reports', 'manage-admins'];
                 
                     sections.forEach(id => {
                         document.getElementById(id).style.display = (id === sectionId) ? 'block' : 'none';
@@ -46,14 +42,14 @@
                 <li onclick="loadSection('schedule-events')">Schedule Events</li>
                 <li onclick="loadSection('view-orders')">View Orders</li>
                 <li onclick="loadSection('reports'); showReportsSection()">Reports</li>
+                <li onclick="loadSection('manage-admins')">Manage Admins</li>
             </ul>
         </div>
         <div class="content">
-            <div style="display: block;" id="manage-arts" >
-                <h2>Manage Arts</h2>
+            <div style="display: block; position: relative;" id="manage-arts" >
+                <h2 style="text-align: center;">Manage Arts</h2>
 
-                    <div  class="content-wrapper">
-                        
+                    <div  class="content-wrapper" >                        
                         <div style="display: flex; flex-direction: row; justify-content: space-between;">
                             <div class="filters">
                                 <select id="sortBy">
@@ -71,7 +67,7 @@
                         </div><!-- Filters -->
 
                         <!-- Arts Table -->
-                        <div class="arts-table">
+                        <div class="data-table">
                             <table>
                                 <thead>
                                     <tr>
@@ -92,7 +88,7 @@
                         </div>
                     </div>
                     <!-- </div> -->
-                </div>
+                <!-- </div> -->
 
                 <!-- Add/Edit Art Modal -->
                 <div style="display: none;" id="artModal" class="modal">
@@ -180,29 +176,32 @@
             </div>
     
             <div style="display: none;" id="manage-artists">
-                <h2>Manage Artists</h2>
+                <h2 style="text-align: center;">Manage Artists</h2>
                
                 <div class="page-header">
                     <button style="position: absolute; right: 5%;" id="addArtistBtn" class="btn-primary" onclick="document.getElementById('artistModal').style.display='block' ">+Add Artist
                     </button>
                 </div>
 
-                <table id="artistsTable">
-                    <thead>
-                        <tr>
-                            <th>Artist ID</th>
-                            <th>Name</th>
-                            <th>Bio</th>
-                            <th>Date of Birth</th>
-                            <th>Town</th>
-                            <th>Registered On</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <!-- Artist rows will be populated here -->
-                    </tbody>
-                </table>
+                <div class="data-table">
+                    <table  id="artistsTable">
+                        <thead>
+                            <tr>
+                                <th>Artist ID</th>
+                                <th>Name</th>
+                                <th>Bio</th>
+                                <th>Date of Birth</th>
+                                <th>Town</th>
+                                <th>Registered On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Artist rows will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
             
             <!-- Add Artist Modal -->
@@ -259,31 +258,34 @@
             
     
             <div style="display: none;" id="schedule-events">
-                <h2>Schedule Events</h2>
+                <h2 style="text-align: center;">Schedule Events</h2>
             
                 <div class="page-header">
                     <button style="position: absolute; right: 5%;" id="addEventBtn" class="btn-primary" onclick="document.getElementById('eventModal').style.display='block'">+ Add Event</button>
                 </div>
-            
-                <table id="eventsTable">
-                    <thead>
-                        <tr>
-                            <th>Event ID</th>
-                            <th>Event Name</th>
-                            <th>Location</th>
-                            <th>Date</th>
-                            <th>Time</th>
-                            <th>Host</th>
-                            <th>Register URL</th>
-                            <th>Added On</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody id="eventsTableBody">
-                        <!-- Event rows will be populated here via JavaScript -->
-                       
-                    </tbody>
-                </table>
+                
+                <div class="data-table">
+                    <table id="eventsTable">
+                        <thead>
+                            <tr>
+                                <th>Event ID</th>
+                                <th>Event Name</th>
+                                <th>Location</th>
+                                <th>Date</th>
+                                <th>Time</th>
+                                <th>Host</th>
+                                <th>Register URL</th>
+                                <th>Added On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="eventsTableBody">
+                            <!-- Event rows will be populated here via JavaScript -->
+                           
+                        </tbody>
+                    </table>
+                </div>
+
             </div>
             
             <!-- Schedule Event Modal -->
@@ -351,22 +353,33 @@
             
     
             <div style="display: none;" id="view-orders">
-                <h2>View Orders</h2>
-                <table id="ordersTable" style="width: 100%;">
-                    <thead>
-                        <tr>
-                            <th>Order ID</th>
-                            <th>User ID</th>
-                            <th>Art ID</th>
-                            <th>Quantity</th>
-                            <th>Total</th>
-                            <th>Date</th>
-                            <th>Served</th>
-                            <th>Controls</th>
-                        </tr>
-                    </thead>
-                    <tbody></tbody>
-                </table>
+                <h2 style="text-align: center;">View Orders</h2>
+                <label style="color: blue; font-weight: bold;" for="sortSelect">Sort by:</label>
+                <select id="sortSelect" style="border: 1px solid blue;">
+                    <option value="default">Date & Served</option>
+                    <option value="user_name">Full Name</option>
+                    <option value="art_id">Art ID</option>
+                    <option value="quantity">Quantity</option>
+                    <option value="total_price">Total</option>
+                </select>
+
+                <div class="data-table">
+                    <table id="ordersTable" style="width: 100%;">
+                        <thead>
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer Name</th>
+                                <th>Art ID</th>
+                                <th>Quantity</th>
+                                <th>Total</th>
+                                <th>Date</th>
+                                <th>Served</th>
+                                <th>Controls</th>
+                            </tr>
+                        </thead>
+                        <tbody></tbody>
+                    </table>
+                </div>
             </div>
             
             <!-- View Order Modal -->
@@ -386,7 +399,7 @@
             
     
             <div style="display: none;" id="reports">
-                <h2>Reports</h2>
+                <h2 style="text-align: center;">Reports</h2>
             
                 <div style="margin-top: 20px;">
                     <h3>Art Title vs Quantity Ordered</h3>
@@ -423,6 +436,82 @@
                     
                     <button style="position: absolute; right: 10%; top: 70%;" id="customBtn" onclick="downloadChart('artistArtCountChart', 'artist_art_count_chart')">Download Chart</button>
                 </div>
+            </div>
+            
+
+            <div style="display: none;" id="manage-admins">
+                <h2 style="text-align: center;">Manage Admins</h2>
+                
+                <div class="page-header">
+                    <button style="position: absolute; right: 5%;" id="addAdminBtn" class="btn-primary" onclick="document.getElementById('adminModal').style.display='block'">+Add Admin</button>
+                </div>
+            
+                <div class="data-table">
+                    <table id="adminsTable">
+                        <thead>
+                            <tr>
+                                <th>Admin ID</th>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Role</th>
+                                <th>Registered On</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- Admin rows will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+
+                <div id="adminModal" class="modal">
+                    <div class="modal-content">
+                        <span style="position: absolute; top: 5px; right: 5px; cursor: pointer;" class="lets-icons--close-round-fill" onclick="document.getElementById('adminModal').style.display = 'none';"></span>
+                        <h2 id="adminModalTitle">Add Admin</h2>
+                        <form id="adminForm">
+                            <input type="hidden" id="adminId" name="adminId">
+                
+                            <div class="form-group">
+                                <label for="adminName">Full Name:</label>
+                                <input type="text" id="adminName" name="adminName" required>
+                            </div>
+                
+                            <div class="form-group">
+                                <label for="adminEmail">Email:</label>
+                                <input type="email" id="adminEmail" name="adminEmail" required>
+                            </div>
+                
+                            <div class="form-group">
+                                <label for="adminRole">Role:</label>
+                                <select id="adminRole" name="adminRole" required>
+                                    <option value="">Select Role</option>
+                                    <option value="client">Client</option>
+                                    <option value="artist">Artist</option>
+                                    <option value="admin">Admin</option>
+                                </select>
+                            </div>
+                        </form>
+                        <button style="margin-left: 40%;" type="button" id="saveAdminBtn" onclick="saveAdmin()">Save</button>
+                    </div>
+                </div>
+
+                <div style="display: none;" id="deleteAdminModal" class="modal">
+                    <div class="modal-content small">
+                        <div class="modal-header">
+                            <span style="position: absolute; top: 5px; right: 5px; cursor: pointer;" class="lets-icons--close-round-fill" onclick="document.getElementById('deleteAdminModal').style.display = 'none';"></span>
+                            <h2>Confirm Deletion</h2>
+                        </div>
+                        <div class="modal-body">
+                            <p style="font-weight: bold;">Are you sure you want to delete <span id="delAdminName" style="color: crimson;"></span>? This action cannot be undone.</p>
+                            <div class="form-actions">
+                                <button type="button" class="btn-secondary" onclick="document.getElementById('deleteAdminModal').style.display = 'none';">Cancel</button>
+                                <button type="button" class="btn-danger" id="confirmDeleteAdmin">Delete</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                
             </div>
             
             
