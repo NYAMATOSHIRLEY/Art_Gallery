@@ -23,7 +23,7 @@
                 <p id="profileName"></p>
                 <p id="profileEmail"></p>
                 <!-- <p>Help</p> -->
-                <p  onclick="logout() "> Logout</p>
+                <span  onclick="logout() "> Logout</span>
             </div>
         </div>
         
@@ -51,20 +51,45 @@
     </div>
 
     <!-- Payment Pop Up-->
-    <div style="display: none;position: absolute; top: 5%; border: 2px solid blue;" class="form-container" id="payment-popUp" name="paymentForm">
-        <h3>Complete Your Order</h3>
-        <form action="php/payment.php" method="POST" name="paymentForm">
-            <label>Enter M-Pesa Number:</label>
-            <input type="number" name="mpesa_number" placeholder="0700000000" required>
-            <button type="button" onclick="orderNow(parseInt(document.paymentForm.mpesa_number.value))">Pay Now</button>
-        </form>
-    </div>
+     <div class="modal-overlay"  id="payment-popUp" style="display: none;">
+        <div style="position: absolute; top: 30%; left: 35%; border: 2px solid blue; z-index: 1000;" id="popUp" class="form-container" name="paymentForm">
+            <h3 style="color: blue; text-decoration: underline; text-underline-offset: 3px;">COMPLETE YOUR ORDER</h3>
+            <form action="php/payment.php" method="POST" name="paymentForm">
+                <label>Enter M-Pesa Number:</label>
+                <input type="number" name="mpesa_number" placeholder="0700000000" required>
+                <button type="button" onclick="document.getElementById('payment-popUp').style.display= 'none';">Cancel</button>
+                <button type="button" onclick="orderNow(parseInt(document.paymentForm.mpesa_number.value))">Pay Now</button>
+            </form>
+        </div>
+     </div>
+
 
     <!-- Confirmation Pop Up-->>
-     <div class="message-popUp-container" id="message-popUp-container">
-        <p id="message-popUpText"></p>
-        <button  type="button" id="customBtn">OK</button>
-     </div>
+    <div id="modalOverlay" style="display: none;" class="modal-overlay">
+        <div class="message-popUp-container" id="message-popUp-container">
+            <p id="message-popUpText"></p>
+            <button type="button" id="customBtn" onclick=" document.getElementById('modalOverlay').style.display='none';   document.getElementById('message-popUp-container').style.display='none'; ">OK</button>
+        </div>
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div style="display: none;" id="deleteModal" class="modal">
+        <div id="modalContent" class="modal-content small">
+            <div class="modal-header">
+                <span style="position: absolute; top: 5px; right: 5px; cursor: pointer;" class="lets-icons--close-round-fill" onclick="document.getElementById('deleteModal').style.display = 'none';"></span>
+                <h2>Confirm Deletion</h2>
+                <!-- <span class="close-modal">&times;</span> -->
+            </div>
+            <div class="modal-body">
+                <p id="warning" style="font-weight: bold;"></p>
+                <div class="form-actions">
+                    <button type="button" id="cancelDelete" class="btn-secondary close-modal">Cancel</button>
+                    <button type="button" id="confirmDelete" class="btn-danger">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
      
 </body>
 </html>

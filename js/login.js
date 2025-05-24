@@ -1,6 +1,7 @@
 
 function Login() {
     const formData = new FormData(document.getElementById('login_form'));
+    const registrationMessage = document.getElementById('registration-message');
 
     fetch('php/login.php', {
         method: 'POST',
@@ -13,16 +14,24 @@ function Login() {
             sessionStorage.setItem('full_name', data.full_name);
             sessionStorage.setItem('email', data.email);
             
-
+            if(data.role === 'admin') {
+                window.location.href = 'admin.html';
+            }else{
+                window.location.href = 'catalogue.html';
+            }
             // Redirect to dashboard 
-            window.location.href = 'catalogue.html';
+            
         } else {
-            alert(data.message || 'Invalid username or password.');
+            // alert(data.message || 'Invalid username or password.');
+            registrationMessage.textContent = data.message || data.error;
+            registrationMessage.classList.add('error-message');
         }
     })
     .catch(error => {
         console.error('Login error:', error);
-        alert('Something went wrong. Please try again.');
+        registrationMessage.textContent = data.message || data.error;
+        registrationMessage.classList.add('error-message');
+        // alert('Something went wrong. Please try again.');
     });
 }
 

@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
         fetch('php/load_catalogue.php')
         .then(res => res.json())
         .then(data => {
-            console.log("Data", data)
+            // console.log("Data", data)
             const artList = document.getElementById('artList');
             artList.innerHTML = '';
             data.forEach(art => {
@@ -23,7 +23,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         <span id="qty-${art.id}">0</span>
                         <button onclick="changeQty(${art.id}, 1)">+</button>
                     </div>
-                    <button id="add-to-cart" onclick="addToCart(${art.id})">Add to Cart</button>
+                    <button id="add-to-cart" onclick="addToCart(${art.id}); document.getElementById('qty-${art.id}').textContent = 0;">Add to Cart</button>
                     
                 `;
                 artList.appendChild(artDiv);
@@ -35,8 +35,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+});
 
-    // const cart = {};
 
     function changeQty(id, delta) {
         const qtySpan = document.getElementById(`qty-${id}`);
@@ -44,8 +44,6 @@ document.addEventListener('DOMContentLoaded', () => {
         qty = Math.max(0, qty + delta);
         qtySpan.textContent = qty;
     }
-
-
 
     const cartToggle = document.getElementById('cartToggle');
     const cartSidebar = document.getElementById('cartSidebar');
@@ -61,12 +59,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    function closeCart(){
-        cartSidebar.classList.remove('cart-visible');
-    }
+   
 
-});
 
+function closeCart(){
+    cartSidebar.classList.remove('cart-visible');
+}
 
 const panel = document.getElementById('eventsPanel');
 const trigger = document.getElementById('eventsSection');
@@ -103,7 +101,7 @@ function loadEvents() {
                 return;
             }
 
-            console.log("Events", events)
+            // console.log("Events", events)
             events.forEach(event => {
                 const li = document.createElement('li');
                 li.style.cssText = `

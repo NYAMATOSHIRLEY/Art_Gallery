@@ -17,7 +17,7 @@ document.getElementById('registerForm').addEventListener('submit', async functio
 
         const data = await response.json();
         
-        registrationMessage.textContwent = data.message || data.error;
+        registrationMessage.textContent = data.message || data.error;
         registrationMessage.classList.remove('hidden');
         
         if (data.success) {
@@ -25,15 +25,17 @@ document.getElementById('registerForm').addEventListener('submit', async functio
             sessionStorage.setItem('full_name', formData.get('full_name'));
             sessionStorage.setItem('email', formData.get('email'));
             setTimeout(() => {
-                window.location.href = data.redirect || 'login.html';
+                window.location.href = data.redirect || 'catalogue.html';
             }, 2000);
         } else {
             registrationMessage.classList.add('error-message');
+            // registrationMessage.textContent = data.message;
+            
         }
     }catch (error) {
         console.error('Registration error:', error);
-        registrationMessage.textContent = 'Registration failed. Please try again.';
         registrationMessage.classList.remove('hidden');
         registrationMessage.classList.add('error-message');
+        registrationMessage.textContent = 'An Error Occurred . Please try again.';
     }
 });

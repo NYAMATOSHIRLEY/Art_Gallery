@@ -29,5 +29,5 @@ if ($check->num_rows > 0) {
     $insert->execute();
 }
 
-echo "Added to cart!";
+echo "Item Successfully Added to cart!";
 ?>

@@ -10,8 +10,9 @@ function addToCart(id) {
         body: JSON.stringify({ art_id: id, quantity: qty })
     })
     .then(res => res.text())
-    .then(msg => alert(msg));
+    .then(msg => showMessage(msg));
     fetchCartData();
+    // console.log("Refetched cart data");
 }
 
 const fetchCartData = () =>{
@@ -31,7 +32,7 @@ const fetchCartData = () =>{
             total += itemTotal;
             return `
                 <div class="cart-item">
-                     <span style="position: absolute; top: 5px; right: 5px; cursor: pointer;" class="lets-icons--close-round-fill" onclick="removeFromCart(${item.id})"></span>
+                     <span style="position: absolute; top: 5px; right: 5px; cursor: pointer;" class="lets-icons--close-round-fill" onclick="confirmRemoveFromCart(${item.id}, '${item.title.replace(/'/g, "\\'")}')"></span>
                     <div class="cart-item-img">
                         <img src="${item.image}" alt="${item.title}" />
                     </div>
@@ -53,6 +54,24 @@ const fetchCartData = () =>{
     });
 }
 
+function confirmRemoveFromCart(artId, itemName) {
+    const message = `Are you sure you want to remove the item ${itemName} from your cart?`;
+    const overlay = document.getElementById('deleteModal');
+    const warningText = document.getElementById('warning');
+
+    overlay.style.display = 'block';
+    warningText.textContent = message;
+
+    // Add event listeners to the buttons
+    document.getElementById('confirmDelete').onclick = () => {
+        removeFromCart(artId);
+        overlay.style.display = 'none';
+    };
+    document.getElementById('cancelDelete').onclick = () => {
+        overlay.style.display = 'none';
+    };
+}
+
 //Function to remove an item from cart
 function removeFromCart(artId) {
     fetch('php/remove_from_cart.php', {
@@ -62,7 +81,7 @@ function removeFromCart(artId) {
     })
     .then(res => res.text())
     .then(msg => {
-        alert(msg);
+        showMessage(msg);
         fetchCartData(); // Refresh cart after removal
     });
 }
@@ -78,7 +97,7 @@ function orderNow(x) {
     document.getElementById('payment-popUp').style.display ='none'
     const message = `Dear Customer, an Mpesa Pin Prompt has been sent to the number ${x}.Please enter your Mpesa pin to complete the transaction amounting to Ksh. ${amount}. ` 
     document.getElementById('cartSidebar').classList.remove('cart-visible');
-    showPopUpMessage(message);
+    showMessage(message);
 }
 
 const showPopUpMessage= (msg) =>{
@@ -88,3 +107,15 @@ const showPopUpMessage= (msg) =>{
     messagePopUp.innerHTML = ` <p>${msg}</p>`;
 }
 
+
+function showMessage(message) {
+    const overlay = document.getElementById('modalOverlay');
+    const popup = document.getElementById('message-popUp-container');
+    const messageText = document.getElementById('message-popUpText');
+
+    messageText.textContent = message;
+    overlay.style.display = 'block';
+    popup.style.display = 'block';
+
+
+}

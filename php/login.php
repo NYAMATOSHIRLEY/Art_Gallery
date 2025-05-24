@@ -34,10 +34,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             echo json_encode([
                 'success' => true,
                 'full_name' => $full_name,
-                'email' => $fetched_email
+                'email' => $fetched_email,
+                'role' => $role
             ]);
         } else {
-            echo json_encode(['success' => false, 'message' => 'Incorrect password.']);
+            echo json_encode(['success' => false, 'message' => 'Incorrect Email or  password.']);
         }
     } else {
         echo json_encode(['success' => false, 'message' => 'User not found.']);

@@ -159,7 +159,7 @@ header a{
 
 .tooltip .tooltipbox{
     visibility: hidden;
-    width: 120px;
+    width: 150px;
     max-width: 200px;
     background-color: black;
     color: azure;
@@ -281,9 +281,25 @@ header a{
     width: 100px; 
     border: 0px;
 }
+
+.modal-overlay {
+    display: none; /* hidden by default */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background-color: rgba(0, 0, 0, 0.4); /* dark translucent background */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
 .message-popUp-container{
     position: absolute;
-    top: 5%;
+    top: 35%;
+    left: 35%;
     display: none;
     background-color: aliceblue;
     z-index: 12;
