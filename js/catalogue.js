@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 artDiv.innerHTML = `
                     <img src="${art.image}" alt="${art.title}" />
                     <h3>${art.title}</h3>
-                    <p>By ${art.artist}</p>
+                    <p style="font-size:12px;">By ${art.artist}</p>
                     <p>Price: KES ${art.price}</p>
                     <div class="quantity-controls" style="display:inline-block;">
                         <button onclick="changeQty(${art.id}, -1)">-</button>
@@ -34,47 +34,62 @@ document.addEventListener('DOMContentLoaded', () => {
         console.error("Error loading catalogue: ", error);
     }
 
+
+
+    // const cart = {};
+
+    function changeQty(id, delta) {
+        const qtySpan = document.getElementById(`qty-${id}`);
+        let qty = parseInt(qtySpan.textContent);
+        qty = Math.max(0, qty + delta);
+        qtySpan.textContent = qty;
+    }
+
+
+
+    const cartToggle = document.getElementById('cartToggle');
+    const cartSidebar = document.getElementById('cartSidebar');
+
+    cartToggle.addEventListener('click', (e) => {
+        e.stopPropagation(); // prevent body click from immediately hiding it
+        cartSidebar.classList.toggle('cart-visible');
+    });
+
+    document.addEventListener('click', (e) => {
+        if (!cartSidebar.contains(e.target) && !cartToggle.contains(e.target)) {
+            closeCart();
+        }
+    });
+
+    function closeCart(){
+        cartSidebar.classList.remove('cart-visible');
+    }
+
 });
 
-// const cart = {};
 
-function changeQty(id, delta) {
-    const qtySpan = document.getElementById(`qty-${id}`);
-    let qty = parseInt(qtySpan.textContent);
-    qty = Math.max(0, qty + delta);
-    qtySpan.textContent = qty;
-}
-
-
-
-const cartToggle = document.getElementById('cartToggle');
-const cartSidebar = document.getElementById('cartSidebar');
-
-cartToggle.addEventListener('click', (e) => {
-    e.stopPropagation(); // prevent body click from immediately hiding it
-    cartSidebar.classList.toggle('cart-visible');
-});
+const panel = document.getElementById('eventsPanel');
+const trigger = document.getElementById('eventsSection');
 
 document.addEventListener('click', (e) => {
-    if (!cartSidebar.contains(e.target) && !cartToggle.contains(e.target)) {
-        closeCart();
+    if (!panel.contains(e.target) && !trigger.contains(e.target)) {
+        closeEvents();
     }
 });
 
-function closeCart(){
-    cartSidebar.classList.remove('cart-visible');
-}
-
-
-
 function showEvents(){
-    const panel = document.getElementById('eventsPanel');
     const isVisible = panel.style.display === 'block';
     
     panel.style.display = isVisible ? 'none' : 'block';
 
     if (!isVisible) loadEvents(); // load events only when showing
 };
+
+
+
+function closeEvents(){
+    panel.style.display = 'none';
+}
 
 function loadEvents() {
     fetch('php/load_events.php')
@@ -91,18 +106,40 @@ function loadEvents() {
             console.log("Events", events)
             events.forEach(event => {
                 const li = document.createElement('li');
-                li.style.marginBottom = '10px';
-                li.innerHTML = `
-                    <strong>${event.name}</strong><br>
-                    📍 ${event.location}<br>
-                    📅 ${event.event_date} ⏰ ${event.event_time}<br>
-                    🧑‍💼 Hosted by: ${event.host}<br>
-                    Registration Url by: ${event.register_url}<br>
+                li.style.cssText = `
+                    background-color: white;
+                    border: 1px solid #ddd;
+                    border-radius: 8px;
+                    padding: 12px 15px;
+                    margin-bottom: 10px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                    font-family: Arial, sans-serif;
+
                 `;
+                
+                li.innerHTML = `
+                    <div style="font-size: 18px; font-weight: 700; margin-bottom: 6px; color: #333;">
+                        ${event.name}
+                    </div>
+                    <div style="font-size: 14px; color: #555;">
+                        📍 ${event.location}<br>
+                        📅 ${event.event_date} ⏰ ${event.event_time}<br>
+                        🧑‍💼 Hosted by: ${event.host}<br>
+                        
+                        <a href="${event.register_url}" target="_blank" style="color: #007BFF; text-decoration: none; cursor: pointer;">
+                            Register
+                        </a>
+                    </div>
+                `;
+                
                 list.appendChild(li);
+                
             });
         })
         .catch(err => {
             console.error('Error loading events:', err);
         });
 }
+
+
+

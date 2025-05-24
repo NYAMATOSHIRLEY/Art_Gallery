@@ -34,7 +34,8 @@
         <!-- Loaded dynamically via JS -->
     </div>
 
-    <section id="eventsPanel" style="display: none; position: absolute; top: 60px; right: 10%; width: 300px; max-height: 400px; overflow-y: auto; background: white; border: 1px solid #ccc; border-radius: 10px; padding: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.2); z-index: 1000;">
+    <section id="eventsPanel" style="display: none; position: absolute; top: 60px; left: 5%; width: 600px; max-height: 500px; overflow-y: auto; background: black; border: 1px solid #ccc; border-radius: 10px; padding: 15px; box-shadow: 0 0 10px rgba(0,0,0,0.2); z-index: 1000;">
+        <span style="position: absolute; top: 5px; right: 5px; cursor: pointer;" class="lets-icons--close-round-fill" onclick="closeEvents()"></span>
         <h3 style="margin-top: 0;">Upcoming Events</h3>
         <ul id="eventsList" style="list-style: none; padding-left: 0;"></ul>
     </section>

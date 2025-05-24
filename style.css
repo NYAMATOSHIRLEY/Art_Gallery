@@ -180,6 +180,12 @@ header a{
 }
 
 
+/*Events board*/
+#eventsList li{
+    background-color: aliceblue;
+}
+
+
 .cart-sidebar {
     position: fixed;
     top: 0;
