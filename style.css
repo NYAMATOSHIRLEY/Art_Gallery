@@ -40,6 +40,8 @@ button:hover {
 
 #registerForm  input  ,select ,button{
     width: 30%;
+    /* position: absolute;
+    align-items: right; */
 
 }
 /* 

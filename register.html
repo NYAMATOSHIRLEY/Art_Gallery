@@ -13,28 +13,28 @@
     <div  class="form-container" style=" margin-top: 20px;">
         <h2>Register</h2>
         <form style="width: 50vw;" id="registerForm" autocomplete="off" style="display: flex; flex-direction: column; gap: 10px;">
-            <label for="full_name">Full Name</label>
+            <label style="margin-right: 110px;" for="full_name">Full Name</label>
             <input type="text" name="full_name" placeholder="Full Name" required> <br>
 
             <!-- <label for="username"></label>
             <input type="text" name="username" placeholder="Username (letters only)" pattern="[A-Za-z]+" required> -->
 
-            <label for="email">Email</label>
+            <label style="margin-right: 140px;" for="email">Email</label>
             <input type="email" name="email" placeholder="Email" required autocomplete="off"> <br>
 
-            <label for="password">Password</label>
+            <label style="margin-right: 105px;" for="password">Password</label>
             <input type="password" name="password" id="password" placeholder="Password (min 8 chars)" minlength="8" required> <br>
 
-            <label for="confirm_password">Confirm Password</label>
+            <label style="margin-right: 40px;" for="confirm_password">Confirm Password</label>
             <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm Password" required> <br>
             <!-- <label><input type="checkbox" onclick="togglePassword()"> Show Passwords</label> -->
 
-            <label for="role">Role</label>
+            <label style="margin-right: 150px;" for="role">Role</label>
             <select name="role" required>
                 <option value="">Register as...</option>
                 <option value="client">Client</option>
                 <option value="artist">Artist</option>
-            </select>
+            </select> <br>
             <button type="submit">Register</button>
         </form>
         <p id="registration-message"></p>
