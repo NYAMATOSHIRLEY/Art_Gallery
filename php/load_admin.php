@@ -18,11 +18,11 @@ switch ($sort) {
         break;
 }
 
-$sql = "SELECT a.id, a.title, a.image,a.price, a.created_at,a.updated_at, ar.name AS artist 
+$sql = "SELECT a.id, a.title, a.image,a.price, a.created_at,a.updated_at, ar.name AS artist ,a.show, a.quantity
         FROM arts a
         JOIN artists ar ON a.artist_id = ar.id
         ORDER BY $orderBy";
-
+    
 $result = $conn->query($sql);
 $arts = [];
 

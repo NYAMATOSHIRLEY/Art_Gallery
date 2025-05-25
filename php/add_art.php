@@ -15,9 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['artTitle'] ?? '';
     $artist = $_POST['artArtist'] ?? '';
     $price = $_POST['artPrice'] ?? '';
+    $quantity = $_POST['artQuantity'] ?? '';
+    $show = $_POST['show'] ?? '';
     $image = $_FILES['artImage'] ?? null;
 
-    if (!$title || !$artist || !$price || !$image) {
+    if (!$title || !$artist || !$price || $quantity === '' || $show === '' || !$image) {
         $response['message'] = 'All fields are required.';
         echo json_encode($response);
         exit;
@@ -49,9 +51,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $imagePath = 'images/' . $imageName;
 
-    // Save to database
-    $stmt = $conn->prepare("INSERT INTO arts (title, artist_id, price, image, created_at, updated_at) VALUES (?, ?, ?, ?, NOW(), NOW())");
-    $stmt->bind_param("siss", $title, $artist, $price, $imagePath);
+    // Save to database with show and quantity
+    $stmt = $conn->prepare("INSERT INTO arts (title, artist_id, price, quantity,`show`, image, created_at, updated_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())");
+    $stmt->bind_param("sidiss", $title, $artist, $price, $quantity, $show, $imagePath);
 
     if ($stmt->execute()) {
         $response['success'] = true;

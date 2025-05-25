@@ -3,6 +3,19 @@ document.getElementById('registerForm').addEventListener('submit', async functio
     
     const formData = new FormData(this);
     const registrationMessage = document.getElementById('registration-message');
+
+    
+    // Get password and confirm password values
+    const password = formData.get('password');
+    const confirmPassword = formData.get('confirm_password'); // make sure your confirm password input has name="confirm_password"
+
+    // Validate passwords match
+    if (password !== confirmPassword) {
+        registrationMessage.textContent = 'Passwords do not match.';
+        registrationMessage.style.color = 'red';
+        return; // stop form submission
+    }
+
     
     try {
         const response = await fetch('php/register.php', {

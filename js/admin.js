@@ -29,10 +29,15 @@ function loadArts(sort = 'newest') {
                     <td>${art.price}</td>
                     <td>${new Date(art.created_at).toLocaleDateString()}</td>
                     <td>${new Date(art.updated_at).toLocaleDateString()}</td>
-                    <td>${art.artist}</td>                    
+                    <td>${art.artist}</td> 
+                    <td style="color: ${art.show == 1 ? 'green' : 'red'}; font-weight: bold;">
+                      ${art.show == 1 ? 'Yes' : 'No'}
+                    </td>
+
+                    <td>${art.quantity}</td>                   
                     <td>
-                        <button onclick="editArt(${art.id})">✏️</button>
-                        <button onclick="confirmDelete(${art.id})">🗑️</button>
+                        <button onclick="editArt(${art.id})"><span class="ic--outline-edit"></span></button>
+                        <button onclick="confirmDelete(${art.id})"><span class="material-symbols--delete"></span></button>
                     </td>
                 `;
                 tbody.appendChild(tr);
@@ -40,6 +45,79 @@ function loadArts(sort = 'newest') {
         })
         .catch(err => console.error("Error loading arts:", err));
 }
+
+
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    const artForm = document.getElementById('artForm');
+    const artModal = document.getElementById('artModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const closeModalButtons = document.querySelectorAll('.close-modal');
+    const imageInput = document.getElementById('artImage');
+    const imagePreview = document.getElementById('imagePreview');
+  
+    // Preview selected image
+    imageInput.addEventListener('change', () => {
+      const file = imageInput.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = e => {
+          imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 100%; max-height: 150px;">`;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  
+    // Handle form submission
+    artForm.addEventListener('submit', async (e) => {
+      e.preventDefault();
+  
+      const formData = new FormData(artForm);
+      const artId = document.getElementById('artId').value;
+      const url = artId ? 'php/edit_art.php' : 'php/add_art.php';
+  
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          body: formData
+        });
+  
+        const result = await response.json();
+        // console.log("Result", result);
+  
+        if (result.success) {
+            document.getElementById('addModal').style.display = 'block';
+            document.getElementById('showmsg').textContent = result.message;
+          artForm.reset();
+          imagePreview.innerHTML = '';
+          closeModal();
+          loadArts(); 
+        } else {
+          alert(`Error: ${result.message}`);
+        }
+      } catch (error) {
+        console.error('Error:', error);
+        // alert('An error occurred while processing the form.');
+        document.getElementById('adminSuccessModal').style.display = 'block';
+        document.getElementById('success-message').textContent =   'An error occurred while processing the form.';
+      }
+    });
+  
+    // Close modal
+    closeModalButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        artForm.reset();
+        imagePreview.innerHTML = '';
+        closeModal();
+      });
+    });
+  
+    function closeModal() {
+      artModal.style.display = 'none';
+    }
+  });
+
 
 function editArt(id) {
     fetch(`php/load_art.php?id=${id}`)
@@ -49,7 +127,8 @@ function editArt(id) {
             document.getElementById('artId').value = art.id;
             document.getElementById('artTitle').value = art.title;
             document.getElementById('artPrice').value = art.price;
-            // document.getElementById('artArtist').innerHTML=`<option selected value="${art.artist_id}">${art.artist_name}</option>`  ;
+            document.getElementById('artQuantity').value= art.quantity;
+            document.getElementById('show').value = art.show;
             const option = document.createElement('option');
             option.value = art.artist_id;
             option.text = art.artist_name;
@@ -124,74 +203,6 @@ function loadArtistNames() {
 
 
 
-document.addEventListener('DOMContentLoaded', () => {
-    const artForm = document.getElementById('artForm');
-    const artModal = document.getElementById('artModal');
-    const modalTitle = document.getElementById('modalTitle');
-    const closeModalButtons = document.querySelectorAll('.close-modal');
-    const imageInput = document.getElementById('artImage');
-    const imagePreview = document.getElementById('imagePreview');
-  
-    // Preview selected image
-    imageInput.addEventListener('change', () => {
-      const file = imageInput.files[0];
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = e => {
-          imagePreview.innerHTML = `<img src="${e.target.result}" alt="Preview" style="max-width: 100%; max-height: 150px;">`;
-        };
-        reader.readAsDataURL(file);
-      }
-    });
-  
-    // Handle form submission
-    artForm.addEventListener('submit', async (e) => {
-      e.preventDefault();
-  
-      const formData = new FormData(artForm);
-      const artId = document.getElementById('artId').value;
-      const url = artId ? 'php/edit_art.php' : 'php/add_art.php';
-  
-      try {
-        const response = await fetch(url, {
-          method: 'POST',
-          body: formData
-        });
-  
-        const result = await response.json();
-        // console.log("Result", result);
-  
-        if (result.success) {
-            document.getElementById('addModal').style.display = 'block';
-            document.getElementById('showmsg').textContent = result.message;
-          artForm.reset();
-          imagePreview.innerHTML = '';
-          closeModal();
-          loadArts(); 
-        } else {
-          alert(`Error: ${result.message}`);
-        }
-      } catch (error) {
-        console.error('Error:', error);
-        alert('An error occurred while processing the form.');
-      }
-    });
-  
-    // Close modal
-    closeModalButtons.forEach(button => {
-      button.addEventListener('click', () => {
-        artForm.reset();
-        imagePreview.innerHTML = '';
-        closeModal();
-      });
-    });
-  
-    function closeModal() {
-      artModal.style.display = 'none';
-    }
-  });
-  
-
 //Manage Artists
 document.addEventListener('DOMContentLoaded', () => {
     // loadArtists();
@@ -223,9 +234,11 @@ const saveArtist= ()=> {
             })
             .then(response => response.json())
             .then(data => {
-                document.getElementById('addModal').style.display = 'block';
-                document.getElementById('showmsg').textContent = data.message;
+                // document.getElementById('addModal').style.display = 'block';
+                // document.getElementById('showmsg').textContent = data.message;
                 // alert(data.message);
+                document.getElementById('adminSuccessModal').style.display = 'block';
+                document.getElementById('success-message').textContent = data.message;
                 if (data.success) {
                     closeArtistModal();
                     loadArtists();
@@ -252,7 +265,7 @@ function loadArtists(sortBy = 'name') {
                     <td>${artist.town}</td>
                     <td>${artist.created_at}</td>
                     <td>
-                        <button style="width:40px;" onclick="startArtistDeletion('${artist.name.replace(/'/g, "\\'")}', ${artist.id})">🗑️</button>                      
+                        <button style="width:40px;" onclick="startArtistDeletion('${artist.name.replace(/'/g, "\\'")}', ${artist.id})"><span class="material-symbols--delete"></span></button>                      
                     </td>
                 `;
                 tbody.appendChild(row);
@@ -332,8 +345,8 @@ function loadEvents() {
                     <td id="url">${event.register_url}</td>
                     <td>${event.added_on}</td>
                     <td>
-                        <button style="width:40px;" onclick="editEvent(${event.id})">✏️</button>
-                        <button style="width:40px;" onclick="confirmDeleteEvent(${event.id})">🗑️</button>
+                        <button style="width:40px;" onclick="editEvent(${event.id})"><span class="ic--outline-edit"></span></button>
+                        <button style="width:40px;" onclick="confirmDeleteEvent(${event.id})"><span class="material-symbols--delete"></span></button>
                     </td>
                 </tr>`;
                 tbody.innerHTML += row;
@@ -403,29 +416,6 @@ function deleteEvent(id) {
 //View Orders
 let currentOrderId = null;
 
-// function loadOrders() {
-//     fetch('php/load_orders.php')
-//         .then(response => response.json())
-//         .then(data => {
-//             const tbody = document.querySelector("#ordersTable tbody");
-//             tbody.innerHTML = "";
-//             data.forEach(order => {
-//                 const row = `
-//                     <tr>
-//                         <td>${order.id}</td>
-//                         <td>${order.user_name}</td>
-//                         <td>${order.art_id}</td>
-//                         <td>${order.quantity}</td>
-//                         <td>${order.total_price}</td>
-//                         <td>${order.order_date}</td>
-//                         <td>${order.served ==1 ? 'Yes' : 'No'}</td>
-//                         <td><button onclick="viewOrder(${order.id})">View</button></td>
-//                     </tr>
-//                 `;
-//                 tbody.innerHTML += row;
-//             });
-//         });
-// }
 
 let ordersData = [];
 

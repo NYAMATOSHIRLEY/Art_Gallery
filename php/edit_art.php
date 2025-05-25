@@ -15,9 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $title = $_POST['artTitle'] ?? '';
   $artist = $_POST['artArtist'] ?? '';
   $price = $_POST['artPrice'] ?? '';
+  $quantity = $_POST['artQuantity'] ?? '';
+  $show = $_POST['show'] ?? '';
   $image = $_FILES['artImage'] ?? null;
 
-  if (!$artId || !$title || !$artist || !$price) {
+  if (!$artId || !$title || !$artist || !$price || $quantity === '' || $show === '') {
     $response['message'] = 'All fields are required.';
     echo json_encode($response);
     exit;
@@ -53,11 +55,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   // Update database
   if ($imagePath) {
-    $stmt = $conn->prepare("UPDATE arts SET title = ?, artist_id = ?, price = ?, image = ?, updated_at = NOW() WHERE id = ?");
-    $stmt->bind_param("sissi", $title, $artist, $price, $imagePath, $artId);
+    $stmt = $conn->prepare("UPDATE arts SET title = ?, artist_id = ?, price = ?, quantity = ?, `show` = ?, image = ?, updated_at = NOW() WHERE id = ?");
+    $stmt->bind_param("sidiisi", $title, $artist, $price, $quantity, $show, $imagePath, $artId);
   } else {
-    $stmt = $conn->prepare("UPDATE arts SET title = ?, artist_id = ?, price = ?, updated_at = NOW() WHERE id = ?");
-    $stmt->bind_param("sisi", $title, $artist, $price, $artId);
+    $stmt = $conn->prepare("UPDATE arts SET title = ?, artist_id = ?, price = ?, quantity = ?, `show` = ?, updated_at = NOW() WHERE id = ?");
+    $stmt->bind_param("sidiii", $title, $artist, $price, $quantity, $show, $artId);
   }
 
   if ($stmt->execute()) {

@@ -1,11 +1,11 @@
 document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('profileName').textContent = sessionStorage.getItem('full_name') || 'Name';
     document.getElementById('profileEmail').textContent = sessionStorage.getItem('email') || 'Email';
-    try{
+
+    try {
         fetch('php/load_catalogue.php')
         .then(res => res.json())
         .then(data => {
-            // console.log("Data", data)
             const artList = document.getElementById('artList');
             artList.innerHTML = '';
             data.forEach(art => {
@@ -13,37 +13,44 @@ document.addEventListener('DOMContentLoaded', () => {
                 artDiv.className = 'art-item';
                 artDiv.setAttribute('data-id', art.id);
 
+
                 artDiv.innerHTML = `
-                    <img src="${art.image}" alt="${art.title}" />
-                    <h3>${art.title}</h3>
-                    <p style="font-size:12px;">By ${art.artist}</p>
-                    <p>Price: KES ${art.price}</p>
-                    <div class="quantity-controls" style="display:inline-block;">
-                        <button onclick="changeQty(${art.id}, -1)">-</button>
-                        <span id="qty-${art.id}">0</span>
-                        <button onclick="changeQty(${art.id}, 1)">+</button>
-                    </div>
-                    <button id="add-to-cart" onclick="addToCart(${art.id}); document.getElementById('qty-${art.id}').textContent = 0;">Add to Cart</button>
+                <img src="${art.image}" alt="${art.title}" />
+                <div >
+                    <h3 style="display:flex; justify-content:space-between; "><span>${art.title}</span> <span style="font-size:12px; text-align:right; font-weight: 300;">By ${art.artist}</span></h3>                    
+                    <p style=" display:flex; justify-content:space-between; "> <span>Ksh. ${art.price}</span> <span>${art.quantity} Items left</span> </p>
                     
-                `;
+                    <div class="quantity-controls" >
+                        <button onclick="changeQty(${art.id}, -1, ${art.quantity})">-</button>
+                        <span id="qty-${art.id}">0</span>
+                        <button onclick="changeQty(${art.id}, 1, ${art.quantity})">+</button>
+                        <button style="width:fit-content;" id="add-to-cart-${art.id}" disabled onclick="addToCart(${art.id}); document.getElementById('qty-${art.id}').textContent = 0; this.disabled = true;">Add to Cart</button>
+                    </div>
+                    
+                </div>
+
+            `;
+            
                 artList.appendChild(artDiv);
             });
         });
-    }
-    catch(error){
+    } catch (error) {
         console.error("Error loading catalogue: ", error);
     }
-
-
 });
 
 
-    function changeQty(id, delta) {
-        const qtySpan = document.getElementById(`qty-${id}`);
-        let qty = parseInt(qtySpan.textContent);
-        qty = Math.max(0, qty + delta);
-        qtySpan.textContent = qty;
-    }
+
+function changeQty(id, delta, available) {
+    const qtySpan = document.getElementById(`qty-${id}`);
+    const addBtn = document.getElementById(`add-to-cart-${id}`);
+    let qty = parseInt(qtySpan.textContent);
+    qty = Math.max(0, Math.min(available, qty + delta));
+    qtySpan.textContent = qty;
+
+    addBtn.disabled = qty === 0;
+}
+
 
     const cartToggle = document.getElementById('cartToggle');
     const cartSidebar = document.getElementById('cartSidebar');

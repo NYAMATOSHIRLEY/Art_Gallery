@@ -22,10 +22,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     $full_name = trim($_POST['full_name'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
-    $role = $_POST['role'] ?? '';
 
     // Validate required fields
-    if (empty($full_name) || empty($email) || empty($password) || empty($role)) {
+    if (empty($full_name) || empty($email) || empty($password)) {
         $response['message'] = 'All fields are required.';
         ob_end_clean();
         echo json_encode($response);
@@ -50,9 +49,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Hash password
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-    // Insert user
-    $stmt = $conn->prepare("INSERT INTO users (full_name, email, password, role) VALUES (?, ?, ?, ?)");
-    $stmt->bind_param("ssss", $full_name, $email, $hashed_password, $role);
+    // Insert user (no role field)
+    $stmt = $conn->prepare("INSERT INTO users (full_name, email, password) VALUES (?, ?, ?)");
+    $stmt->bind_param("sss", $full_name, $email, $hashed_password);
 
     if ($stmt->execute()) {
         $response['success'] = true;
