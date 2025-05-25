@@ -154,25 +154,6 @@ header a{
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 256 193'%3E%3Cpath fill='%234285f4' d='M58.182 192.05V93.14L27.507 65.077L0 49.504v125.091c0 9.658 7.825 17.455 17.455 17.455z'/%3E%3Cpath fill='%2334a853' d='M197.818 192.05h40.727c9.659 0 17.455-7.826 17.455-17.455V49.505l-31.156 17.837l-27.026 25.798z'/%3E%3Cpath fill='%23ea4335' d='m58.182 93.14l-4.174-38.647l4.174-36.989L128 69.868l69.818-52.364l4.669 34.992l-4.669 40.644L128 145.504z'/%3E%3Cpath fill='%23fbbc04' d='M197.818 17.504V93.14L256 49.504V26.231c0-21.585-24.64-33.89-41.89-20.945z'/%3E%3Cpath fill='%23c5221f' d='m0 49.504l26.759 20.07L58.182 93.14V17.504L41.89 5.286C24.61-7.66 0 4.646 0 26.23z'/%3E%3C/svg%3E");
   }
 
-/* #admin-dashboard{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 40px;
-    justify-content: center;
-    align-items: center;
-    height: 80vh;
-}
-
-#admin-dashboard div{
-    width: 200px;
-    height: 200px;
-    border-radius: 10px;
-    padding: 20px;
-    color: white;
-    cursor: pointer;
-} */
-
 .catalogue-container{
     display: flex;
     flex-direction: row;
@@ -407,9 +388,9 @@ header a{
     width: 15%;
     background: black;
     color: #ff7f50;
-    height: 100vh;
+    height: 100%;
     left: 0px;
-    /* position: fixed; */
+    position: fixed;
 }
 
 .main-sidebar h2 {
@@ -432,9 +413,10 @@ header a{
 }
 
 .content {
-    padding: 20px;
-    width: 85%;
+    /* padding: 20px; */
+    width: 82%;
     overflow-y: auto;
+    height: 100%;
 }
 
 .ic--outline-edit {
@@ -455,12 +437,12 @@ header a{
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M7 21q-.825 0-1.412-.587T5 19V6H4V4h5V3h6v1h5v2h-1v13q0 .825-.587 1.413T17 21zm2-4h2V8H9zm4 0h2V8h-2z'/%3E%3C/svg%3E");
   }
 
-#manage-artists , #schedule-events, #view-orders, #reports{
-    overflow-y: auto;
+ #manage-arts, #manage-artists , #schedule-events, #view-orders, #reports,#messages, #manage-admins{
+    /* overflow-y: auto; */
     position: absolute;
     right: 0%;
-    width: 84vw;
-    height: 100vh;
+    width: 83%;
+    height: 100%;
 }
 
 /* stylinf the manage arts section in admin dashboard */
@@ -593,7 +575,7 @@ header a{
     background-color: white;
     border-radius: 8px;
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-    overflow: hidden;
+    overflow: auto;
 }
 
 .data-table table {

@@ -301,10 +301,11 @@ function deleteArtist(id) {
     })
     .then(response => response.json())
     .then(data => {
-        document.getElementById('addModal').style.display = 'block';
-        document.getElementById('showmsg').textContent = data.message;
+
         // alert(data.message);
         if (data.success) {
+            document.getElementById('adminSuccessModal').style.display = 'block';
+            document.getElementById('success-message').textContent =  data.message;
             loadArtists();
         }
     })
@@ -404,10 +405,10 @@ function deleteEvent(id) {
     })
     .then(response => response.json())
     .then(data => {
-        document.getElementById('addModal').style.display = 'block';
-        document.getElementById('showmsg').textContent = data.message;
         // alert(data.message);
         if (data.success) {
+            document.getElementById('adminSuccessModal').style.display = 'block';
+            document.getElementById('success-message').textContent =  data.message;
             document.getElementById('deleteEventModal').style.display = 'none';
             loadEvents();
         }
@@ -711,6 +712,7 @@ function updateOrderStatus() {
                             // document.getElementById('adminSuccessModal').style.display = 'block';
                             document.getElementById('adminSuccessModal').style.display = 'block';
                             document.getElementById('success-message').textContent = "✅ Admin Added Successfully."; ;
+                            loadAdmins(); // Refresh the admin list
                         } else {
                             // alert('Error: ' + result.message);
                             document.getElementById('adminSuccessModal').style.display = 'block';
@@ -788,19 +790,23 @@ function updateOrderStatus() {
                         background: ${msg.attended_to == 0 ? '#ff7f50' : '#e5f4e3'};
                         box-shadow: 0 2px 8px rgba(0,0,0,0.1);
                         margin-bottom: 10px;
+                        width: 95%;
                     `;
     
                     card.innerHTML = `
-                        <h3>${msg.subject}</h3>
+                        <h3 >Subject: <span style="text-decoration:underline; text-decoration-offset:4px; color:green;">${msg.subject}</span> </h3>
                         <p><strong>From:</strong> ${msg.name} (${msg.email})</p>
                         <p>${msg.message}</p>
-                        <p style="font-size: 0.9em; color: gray;">Received: ${new Date(msg.created_at).toLocaleString()}</p>
+                        <p style="font-size: 0.9em; color: green;">Received: ${new Date(msg.created_at).toLocaleString()}</p>
                         <p>Reply: <a href="mailto:${msg.email}">${msg.email}</a> </p>
-                        <div style="position:relative; height:30px; ">
-                            <label style="font-weight: bold; position: absolute;  right: 10px; top:0px; display:block;">                            
-                            ${msg.attended_to == 1 ? 'ALREADY ATTENDED TO' : 'Click To Mark as Attended to'}
-                        </label>
-                        <input style="position: absolute;  right: 0px;  width:100px; top:20px" type="checkbox" class="attendCheckbox" data-id="${msg.id}" ${msg.attended_to == 1 ? 'checked' : ''}>
+                        <div style="position:relative; height:55px; display:flex; flex-direction:column; align-items:right; margin-left:70%;">
+                            <div style="position:relative; height:55px; border:4px solid red; width:300px;">
+                                <label style="font-weight: bold; position: absolute;  right: 10px; top:0px; display:block; color:black;   ">                            
+                                ${msg.attended_to == 1 ? 'ALREADY ATTENDED TO' : 'Click Below To Mark as Attended to'}
+                                 </label>
+                                <input   style=" position: absolute;  right: 20px;  top: 20px; width: 15px; height: 15px; accent-color: #28a745; cursor: pointer; transform: scale(1.5);
+                                    "type="checkbox" class="attendCheckbox" data-id="${msg.id}" ${msg.attended_to == 1 ? 'checked' : ''}>
+                            </div>
                         </div>
 
                     `;
@@ -856,30 +862,3 @@ function updateOrderStatus() {
     }
     
 
-    // document.querySelectorAll('.attendCheckbox').forEach(checkbox => {
-    //     checkbox.addEventListener('change', async function () {
-    //         const id = this.dataset.id;
-    //         const attended = this.checked ? 1 : 0;
-    
-    //         try {
-    //             const res = await fetch('php/edit_attended_to.php', {
-    //                 method: 'POST',
-    //                 headers: { 'Content-Type': 'application/json' },
-    //                 body: JSON.stringify({ id, attended })
-    //             });
-    
-    //             const result = await res.json();
-    //             if (result.success) {
-    //                 this.nextSibling.textContent = attended ? 'Attended' : 'Mark as Attended';
-    //                 this.closest('div').style.background = attended ? '#e5f4e3' : '#ffefef';
-    //             } else {
-    //                 alert('Failed to update status: ' + result.message);
-    //                 this.checked = !attended;
-    //             }
-    //         } catch (err) {
-    //             alert('Network error.');
-    //             this.checked = !attended;
-    //         }
-    //     });
-    // });
-    

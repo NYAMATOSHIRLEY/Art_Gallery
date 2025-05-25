@@ -1,5 +1,6 @@
 <?php
-ob_start(); // Start output buffering early
+ob_start();
+session_start(); // ✅ Start session here
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -18,12 +19,10 @@ $response = [
 ];
 
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
-    // Sanitize inputs with null-safe trimming
     $full_name = trim($_POST['full_name'] ?? '');
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
 
-    // Validate required fields
     if (empty($full_name) || empty($email) || empty($password)) {
         $response['message'] = 'All fields are required.';
         ob_end_clean();
@@ -49,14 +48,24 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
     // Hash password
     $hashed_password = password_hash($password, PASSWORD_BCRYPT);
 
-    // Insert user (no role field)
+    // Insert user
     $stmt = $conn->prepare("INSERT INTO users (full_name, email, password) VALUES (?, ?, ?)");
     $stmt->bind_param("sss", $full_name, $email, $hashed_password);
 
     if ($stmt->execute()) {
+        // ✅ Retrieve the inserted user ID
+        $user_id = $stmt->insert_id;
+
+        // ✅ Set session variables like login.php
+        $_SESSION['user_id'] = $user_id;
+        $_SESSION['username'] = $email;
+        $_SESSION['role'] = 'client'; // Default or inferred
+
         $response['success'] = true;
         $response['message'] = 'Registered successfully!';
         $response['redirect'] = 'catalogue.html';
+        $response['full_name'] = $full_name;
+        $response['email'] = $email;
     } else {
         $response['message'] = 'Registration failed: ' . $stmt->error;
     }

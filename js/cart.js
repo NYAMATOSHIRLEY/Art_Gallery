@@ -10,8 +10,11 @@ function addToCart(id) {
         body: JSON.stringify({ art_id: id, quantity: qty })
     })
     .then(res => res.text())
-    .then(msg => showMessage(msg));
-    fetchCartData();
+    .then(msg => {
+        fetchCartData();
+        showMessage(msg);
+    });
+    
     // console.log("Refetched cart data");
 }
 

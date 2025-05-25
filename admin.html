@@ -10,8 +10,8 @@
     <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels"></script>
 
 </head>
-<body>
-    <header style="width: 100vw;"  class="header">
+<body style="height: 100vh;">
+    <header style="width: 100vw; position: fixed; z-index: 10;"  class="header">
         <h1 > Admin Dashboard - Circle Art</h2>
         <div class="tooltip" style="position: absolute; top: 10px; right: 20px; border-radius: 50%; background-color: blue; width: 40px; height: 40px; cursor: pointer;">
         
@@ -24,7 +24,7 @@
         </div>
     </header>
 
-    <div class="admin-dashboard">
+    <div  class="admin-dashboard">
         <div class="main-sidebar">
             <h2 >CONTROL PANEL</h2>
             <script>
@@ -47,7 +47,7 @@
             </ul>
         </div>
         <div class="content">
-            <div style="display: none; position: relative;" id="manage-arts" >
+            <div style="display: none;  height: 90vh;" id="manage-arts" >
                 <h2 style="text-align: center;">Manage Arts</h2>
 
                     <div  class="content-wrapper" >                        
@@ -189,7 +189,7 @@
 
             </div>
     
-            <div style="display: block;" id="manage-artists">
+            <div style="display: block; height: 90vh;" id="manage-artists">
                 <h2 style="text-align: center;">Manage Artists</h2>
                
                 <div class="page-header">
@@ -534,7 +534,6 @@
                                     <option value="">Select a Role</option>
                                     <option value="admin">Admin</option>
                                     <option value="client">Client</option>
-                                    <option value="artist">Artist</option>
                                 </select>
                             </div>
 
