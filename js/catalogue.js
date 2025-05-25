@@ -2,6 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('profileName').textContent = sessionStorage.getItem('full_name') || 'Name';
     document.getElementById('profileEmail').textContent = sessionStorage.getItem('email') || 'Email';
 
+
     try {
         fetch('php/load_catalogue.php')
         .then(res => res.json())
@@ -146,5 +147,40 @@ function loadEvents() {
         });
 }
 
+// Handle span submit
+document.querySelector('.fluent--send-28-filled').addEventListener('click', async () => {
+    const contactForm = document.getElementById('contactForm');
+    const formData = new FormData(contactForm);
+    const feedback = document.getElementById('contact-message');
 
+    try {
+        const response = await fetch('php/add_message.php', {
+            method: 'POST',
+            body: formData
+        });
 
+        const result = await response.json();
+
+        if (result.success) {
+            showMessage('Message sent successfully!');
+            feedback.textContent = 'Message sent successfully!';
+            feedback.style.color = 'green';
+            contactForm.reset();
+
+            // Refill readonly fields after reset
+            const name = sessionStorage.getItem('full_name') || '';
+            const email = sessionStorage.getItem('email') || '';
+            document.getElementById('name').value = name;
+            document.getElementById('email').value = email;
+        } else {
+            showMessage(result.message || 'Failed to send message. Please try again.');
+            feedback.textContent = result.message;
+            feedback.style.color = 'red';
+        }
+    } catch (error) {
+        showMessage('An error occurred. Please try again.')
+        feedback.textContent = 'An error occurred. Please try again.';
+        feedback.style.color = 'blue';
+        console.error(error);
+    }
+});

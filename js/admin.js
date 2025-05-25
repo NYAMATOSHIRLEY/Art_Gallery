@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     loadOrders()
     loadArtistNames()
     loadAdmins();
+    loadMessages();
 
     document.getElementById('sortBy').addEventListener('change', function () {
         loadArts(this.value);
@@ -234,14 +235,15 @@ const saveArtist= ()=> {
             })
             .then(response => response.json())
             .then(data => {
-                // document.getElementById('addModal').style.display = 'block';
-                // document.getElementById('showmsg').textContent = data.message;
-                // alert(data.message);
-                document.getElementById('adminSuccessModal').style.display = 'block';
-                document.getElementById('success-message').textContent = data.message;
                 if (data.success) {
+                    document.getElementById('adminSuccessModal').style.display = 'block';
+                    document.getElementById('success-message').textContent =  data.message;
                     closeArtistModal();
                     loadArtists();
+                }
+                else{
+                    document.getElementById('adminSuccessModal').style.display = 'block';
+                    document.getElementById('success-message').textContent =  data.message;
                 }
             })
         }
@@ -364,8 +366,8 @@ function saveEvent() {
     })
     .then(response => response.json())
     .then(data => {
-        document.getElementById('addModal').style.display = 'block';
-        document.getElementById('showmsg').textContent = data.message;
+        document.getElementById('adminSuccessModal').style.display = 'block';
+        document.getElementById('success-message').textContent =  data.message;
         // alert(data.message);
         if (data.success) {
             closeEventModal();
@@ -757,4 +759,127 @@ function updateOrderStatus() {
         })
         .catch(error => console.error('Error updating role:', error));
     });
+    
+
+
+
+
+    async function loadMessages() {
+        const container = document.getElementById('messagesContainer');
+        container.innerHTML = ''; // Clear previous content
+    
+        try {
+            const response = await fetch('php/load_messages.php');
+            const data = await response.json();  // 🛠️ await this
+    
+            if (data.success) {
+                const messages = data.messages;
+    
+                if (messages.length === 0) {
+                    container.innerHTML = '<p style="text-align:center;">No messages found.</p>';
+                    return;
+                }
+    
+                messages.forEach(msg => {
+                    const card = document.createElement('div');
+                    card.style = `
+                        padding: 15px;
+                        border-radius: 10px;
+                        background: ${msg.attended_to == 0 ? '#ff7f50' : '#e5f4e3'};
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+                        margin-bottom: 10px;
+                    `;
+    
+                    card.innerHTML = `
+                        <h3>${msg.subject}</h3>
+                        <p><strong>From:</strong> ${msg.name} (${msg.email})</p>
+                        <p>${msg.message}</p>
+                        <p style="font-size: 0.9em; color: gray;">Received: ${new Date(msg.created_at).toLocaleString()}</p>
+                        <p>Reply: <a href="mailto:${msg.email}">${msg.email}</a> </p>
+                        <div style="position:relative; height:30px; ">
+                            <label style="font-weight: bold; position: absolute;  right: 10px; top:0px; display:block;">                            
+                            ${msg.attended_to == 1 ? 'ALREADY ATTENDED TO' : 'Click To Mark as Attended to'}
+                        </label>
+                        <input style="position: absolute;  right: 0px;  width:100px; top:20px" type="checkbox" class="attendCheckbox" data-id="${msg.id}" ${msg.attended_to == 1 ? 'checked' : ''}>
+                        </div>
+
+                    `;
+                    // console.log(msg.id);
+    
+                    container.appendChild(card);
+                });
+    
+                // Optionally attach checkbox change event here
+                document.querySelectorAll('.attendCheckbox').forEach(checkbox => {
+                    checkbox.addEventListener('change', async (e) => {
+                        const messageId = e.target.dataset.id;
+                        const isChecked = e.target.checked;
+                        console.log("Checkbox changed for message ID:", messageId, "Checked:", isChecked);
+                        
+                        try{
+                            const res = await fetch('php/edit_attended_to.php', {
+                                method: 'POST',
+                                headers: { 'Content-Type': 'application/json' },
+                                body: JSON.stringify({ id: messageId, attended_to: isChecked ? 1 : 0 })
+                            });
+        
+                            const result = await res.json();
+                            if (result.success) {
+                                document.getElementById('adminSuccessModal').style.display = 'block';
+                                document.getElementById('success-message').textContent =  "✅ The Message's Attended-to Status updated Successfully.";
+                                loadMessages(); // Refresh messages
+                            
+                            } else {
+                                // alert("Failed to update status.");
+                                console.log(result.message)
+                                document.getElementById('adminSuccessModal').style.display = 'block';
+                                document.getElementById('success-message').textContent =  " Failed to update status.";
+                            }
+
+                    }catch (error) {
+                        console.error('Error updating status:', error);
+                        // alert('An error occurred while updating the status.');
+                        document.getElementById('adminSuccessModal').style.display = 'block';
+                        document.getElementById('success-message').textContent =  " An error occurred while updating the status.";
+                    }
+                });
+                });
+    
+            } else {
+                container.innerHTML = `<p style="color:red;">${data.message}</p>`;
+            }
+    
+        } catch (err) {
+            console.error(err);
+            container.innerHTML = '<p style="color:red;">An error occurred while loading messages.</p>';
+        }
+    }
+    
+
+    // document.querySelectorAll('.attendCheckbox').forEach(checkbox => {
+    //     checkbox.addEventListener('change', async function () {
+    //         const id = this.dataset.id;
+    //         const attended = this.checked ? 1 : 0;
+    
+    //         try {
+    //             const res = await fetch('php/edit_attended_to.php', {
+    //                 method: 'POST',
+    //                 headers: { 'Content-Type': 'application/json' },
+    //                 body: JSON.stringify({ id, attended })
+    //             });
+    
+    //             const result = await res.json();
+    //             if (result.success) {
+    //                 this.nextSibling.textContent = attended ? 'Attended' : 'Mark as Attended';
+    //                 this.closest('div').style.background = attended ? '#e5f4e3' : '#ffefef';
+    //             } else {
+    //                 alert('Failed to update status: ' + result.message);
+    //                 this.checked = !attended;
+    //             }
+    //         } catch (err) {
+    //             alert('Network error.');
+    //             this.checked = !attended;
+    //         }
+    //     });
+    // });
     

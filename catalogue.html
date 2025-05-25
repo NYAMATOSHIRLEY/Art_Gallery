@@ -42,6 +42,7 @@
 
     <!-- Cart-->
     <div  id="cartSidebar" class="cart-sidebar">
+        <span style="cursor: pointer; " class="ic--baseline-refresh" onclick="fetchCartData();"></span>
         <span style="position: absolute; top: 5px; right: 5px; cursor: pointer;" class="lets-icons--close-round-fill" onclick="closeCart()"></span>
         <h3 style="text-align: center; font-weight: bold; text-decoration: underline; color: azure;">MY CART</h3>
         
@@ -89,6 +90,67 @@
         </div>
     </div>
     
-     
+    <footer style="width: 100vw; background: #ff7f50; color: #eee; padding-bottom: 10px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+        <h2 style="text-align: center; color: blue; padding-bottom: 0%; margin-bottom: 0%;">CONTACT</h2>
+        <p style="text-align: center; margin-bottom: 25px; font-weight: bold; color: black; font-size: 20px;">For Any Inquiries, complains, criticism, partnerships  , art submission, event advertisement or any other business. Contact us below. </p>
+        
+        <div style="display: flex; flex-direction: row; justify-content: space-evenly;">
+            <form id="contactForm" style="max-width: 40vw; margin: 0 auto; display: grid; gap: 15px;">
+                
+                <div style="display: flex; flex-direction: row; gap: 20px;">
+                    <div>
+                        <label for="name" style="font-weight: 500;">Name</label>
+                        <input type="text" id="name" name="name" readonly style=" padding: 10px; font-size: 1.1rem; border-radius: 6px; border: none; background: #444; color: #ddd; font-weight: bold;" required>
+                    </div>  
+    
+                    <div>                
+                        <label for="email" style="font-weight: 500;">Email</label>
+                        <input type="email" id="email" name="email" readonly placeholder="Your email" required
+                          style="padding: 10px; border-radius: 6px; border: none; outline: none; font-size: 1.1rem; background: #444; color: #ddd; font-weight: bold;">
+                    </div>
+                </div>
+
+            
+                <label for="subject" style="font-weight: 500;">Subject</label>
+                <input type="text" id="subject" name="subject" placeholder="Subject" required
+                  style="padding: 10px; border-radius: 6px; border: none; outline: none; font-size: 1rem;">
+            
+                <label for="message" style="font-weight: 500;">Message</label>
+                <textarea id="message" name="message" rows="5" placeholder="Your message here..." required
+                  style="padding: 10px; border-radius: 6px; border: none;  resize: vertical;"></textarea>
+                
+                  <p id="contact-message" style="text-align:center; margin-top: 10px;"></p>
+                <span style="color: blue;" class="fluent--send-28-filled" onclick=""></span>
+              </form>
+              
+
+      
+              <div style="width: 30vw;">
+                  <p><span class="skill-icons--instagram"></span>  <span style="font-weight: bold;">circle_arts</span> </p>
+                  <p><span style="color: black;" class="hugeicons--new-twitter-ellipse"></span> <span style="font-weight: bold;">@circle_arts</span></p>
+                  <p><span class="logos--facebook"></span> <span style="font-weight: bold;">circle_arts</span> </p>
+                  <p><span class="logos--tiktok-icon"> </span>   <span style="font-weight: bold;">circle_arts</span></p>
+                  <p><span class="logos--google-gmail"> </span>  <span style="font-weight: bold;">circle.arts@gmail.com</span></p>
+              </div>
+        </div>
+      </footer>
+      
+      <script>  
+            // Populate readonly fields in the Contact form from sessionStorage
+        window.addEventListener('DOMContentLoaded', () => {
+            const nameField = document.getElementById('name');
+            const emailField = document.getElementById('email');
+        
+            const storedName = sessionStorage.getItem('full_name') || 'Your Name';
+            const storedMessage = sessionStorage.getItem('email') || 'Your Email here...';
+            console.log('Session Storage',storedName, storedMessage);
+        
+            nameField.value = storedName;
+            emailField.value = storedMessage;
+            });
+      
+
+      </script>
+      
 </body>
 </html>

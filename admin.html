@@ -29,7 +29,7 @@
             <h2 >CONTROL PANEL</h2>
             <script>
                 function loadSection(sectionId) {
-                    const sections = ['manage-arts', 'manage-artists', 'schedule-events', 'view-orders', 'reports', 'manage-admins'];
+                    const sections = ['manage-arts', 'manage-artists', 'schedule-events', 'view-orders', 'reports', 'manage-admins', 'messages'];
                 
                     sections.forEach(id => {
                         document.getElementById(id).style.display = (id === sectionId) ? 'block' : 'none';
@@ -43,6 +43,7 @@
                 <li onclick="loadSection('view-orders')">View Orders</li>
                 <li onclick="loadSection('reports'); showReportsSection()">Reports</li>
                 <li onclick="loadSection('manage-admins')">Manage Admins</li>
+                <li onclick="loadSection('messages')">Messages</li>
             </ul>
         </div>
         <div class="content">
@@ -542,11 +543,15 @@
                             </div>
                         </form>
                     </div>
-                </div>
-
-                
+                </div>               
                 
             </div>
+
+            <!-- Messages Section -->
+             <div style="display: none;" id="messages">
+                <h2 style="text-align: center;">Inbox Messages</h2>
+                <div id="messagesContainer" style="display: grid; gap: 20px;"></div>
+             </div>
             
             
         </div>
